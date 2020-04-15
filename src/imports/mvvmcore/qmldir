@@ -1,0 +1,5 @@
+module de.framework.QtMvvm.Core
+plugin declarative_mvvmcore
+classname QtMvvmCoreDeclarativeModule
+typeinfo plugins.qmltypes
+depends QtQml 2.2
