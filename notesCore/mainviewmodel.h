@@ -5,12 +5,11 @@
 #include <QtCore/QStringListModel>
 #include "filesystemmodel.h"
 
-//notes（记事本）的viewmodel
 class MainViewModel : public QtMvvm::ViewModel
 {
     Q_OBJECT
 
-//    QTMVVM_SINGLETON
+    QTMVVM_SINGLETON
 
 public:
     Q_INVOKABLE explicit MainViewModel(QObject *parent = nullptr);
@@ -20,7 +19,6 @@ public Q_SLOTS:
     void addTab();
 };
 
-//notes（记事本）的tab 的viewmodel（暂时只有一个tab）
 class MainTabItemViewModel : public QtMvvm::ViewModel
 {
     Q_OBJECT
@@ -44,12 +42,10 @@ Q_SIGNALS:
 protected:
     void onInit(const QVariantHash &params) override;
 
-public Q_SLOTS:
-    //note（记事本）触发添加对话框后点击确定触发添加item
-//    void addData(const QString &data);
-    //这个是note（记事本）的文件列表
-    FileSystemModel *fileSystemModel() const;
-    QModelIndex getRootPathIndex(){
+public:
+
+    Q_INVOKABLE FileSystemModel *fileSystemModel() const;
+    Q_INVOKABLE QModelIndex getRootPathIndex(){
         return _fileSystemModel->getRootPathIndex();
     }
 private:

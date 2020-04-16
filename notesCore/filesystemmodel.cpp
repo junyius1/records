@@ -1,10 +1,10 @@
 #include "filesystemmodel.h"
 
-FileSystemModel::FileSystemModel(QObject *parent):
+FileSystemModel::FileSystemModel(const QString &path, QObject *parent):
 _configModel(ConfigModel::instance())
 {
-    qDebug() << "currentPath=" << QDir::currentPath();
-    setRootPath(_configModel->getValue(QLatin1String("CUR_DIR")));
+    qDebug() << "currentPath=" << path;
+    setRootPath(path);
 //    connect(this, &QFileSystemModel::directoryLoaded, this, &FileSystemModel::onDirectoryLoaded);
 }
 
@@ -15,7 +15,7 @@ _configModel(ConfigModel::instance())
 
 QModelIndex FileSystemModel::getRootPathIndex()
 {
-    return index(_configModel->getValue(QLatin1String("CUR_DIR")));
+    return index(rootPath());
 }
 
 void FileSystemModel::changeNoteFile(const QLatin1String &noteFile)

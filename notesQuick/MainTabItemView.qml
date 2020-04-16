@@ -73,6 +73,11 @@ Pane {
                         hoverEnabled: true
                         onClicked: {
                             fileListView.currentIndex = index
+                            viewModel.show("MainTabItemViewModel*", {
+                                               "title": fileName,
+                                               "path": filePath
+                                           })
+                            console.log("end onClicked");
                         }
                         onDoubleClicked: {
                             fileListView.currentIndex = index

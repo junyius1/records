@@ -20,6 +20,16 @@ void ViewModel::onResult(quint32 requestCode, const QVariant &result)
 			   << "with request code" << requestCode;
 }
 
+void ViewModel::show(const QString &viewModelName, const QVariantMap &params) const
+{
+    QVariantHash hashParams;
+    for(QVariantMap::const_iterator it=params.begin(); it != params.end(); it++)
+    {
+        hashParams[it.key()] = it.value();
+    }
+    QByteArray ba = viewModelName.toLocal8Bit();
+    show(ba.data(), hashParams);
+}
 void ViewModel::show(const char *viewModelName, const QVariantHash &params) const
 {
 	auto metaId = QMetaType::type(viewModelName);

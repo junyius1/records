@@ -39,7 +39,7 @@ FileSystemModel *MainTabItemViewModel::fileSystemModel() const
 MainTabItemViewModel::MainTabItemViewModel(QObject *parent) :
     ViewModel(parent),
     _title(tr("No Title")),
-    _fileSystemModel(new FileSystemModel(parent))
+    _fileSystemModel(nullptr)
 {}
 
 MainTabItemViewModel::~MainTabItemViewModel()
@@ -55,5 +55,6 @@ QString MainTabItemViewModel::title() const
 void MainTabItemViewModel::onInit(const QVariantHash &params)
 {
     _title = params.value(QStringLiteral("title"), _title).toString();
+    _fileSystemModel = new FileSystemModel(params.value(QStringLiteral("path"), QDir::currentPath()).toString());
     emit titleChanged(_title);
 }

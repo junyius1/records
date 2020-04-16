@@ -25,9 +25,9 @@ int main(int argc, char *argv[])
 //    QtMvvm::ServiceRegistry::instance()->registerObject<ConfigModel>(QtMvvm::ServiceRegistry::DestroyOnAppDestroy, true);
 
     QtMvvm::QuickPresenter::getInputViewFactory(); //Workaround for QTBUG-69963
-    qmlRegisterUncreatableType<MainViewModel>(url, 1, 1, "MainViewModel", QStringLiteral("ViewModels cannot be created!"));
-    qmlRegisterUncreatableType<MainTabItemViewModel>(url, 1, 1, "MainTabItemViewModel", QStringLiteral("ViewModels cannot be created!"));
-    qmlRegisterUncreatableType<DrawerViewModel>(url, 1, 1, "DrawerViewModel", QStringLiteral("ViewModels cannot be created"));
+    qmlRegisterUncreatableType<MainViewModel>(url, 1, 1, "MainViewModel", QStringLiteral("MainViewModel cannot be created!"));
+    qmlRegisterUncreatableType<MainTabItemViewModel>(url, 1, 1, "MainTabItemViewModel", QStringLiteral("MainTabItemViewModel cannot be created!"));
+    qmlRegisterUncreatableType<DrawerViewModel>(url, 1, 1, "DrawerViewModel", QStringLiteral("DrawerViewModel cannot be created"));
 //    qmlRegisterUncreatableType<NotesViewModel>(url, 1, 1, "NotesViewModel", QStringLiteral("ViewModels cannot be created"));
 //    qmlRegisterUncreatableType<NotesTabItemViewModel>(url, 1, 1, "NotesTabItemViewModel", QStringLiteral("ViewModels cannot be created"));
 

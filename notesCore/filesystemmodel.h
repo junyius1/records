@@ -8,7 +8,6 @@
 class FileSystemModel : public QFileSystemModel
 {
     Q_OBJECT
-    QTMVVM_INJECT(ConfigModel*, configModel)
 public:
         enum Roles {
             FileIsDir = 2 * Qt::UserRole
@@ -16,7 +15,7 @@ public:
 
     Q_ENUM(Roles)
 
-    Q_INVOKABLE explicit FileSystemModel(QObject *parent = nullptr);
+    FileSystemModel(const QString &path, QObject *parent = nullptr);
 
     //switch note file
     void changeNoteFile(const QLatin1String &noteFile);

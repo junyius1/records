@@ -39,6 +39,8 @@ Q_SIGNALS:
 
 	//! Is emitted on single instance viewmodels when they get shown again
 	QTMVVM_REVISION_1 void instanceInvoked(const QVariantHash &params, QPrivateSignal);
+public:
+    Q_INVOKABLE void show(const QString &viewModelName, const QVariantMap &params = {}) const;
 
 protected:
 	//! Show another viewmodel as a child of this one
