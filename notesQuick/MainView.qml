@@ -44,29 +44,25 @@ Page {
                 Layout.preferredHeight: 56
             }
 
-            //tab view上面的工具条title条
+            //swipe view's head tab bar
             TabBar {
                 id: tabBar
                 Layout.columnSpan: 2
                 Layout.fillWidth: true
-                onCurrentIndexChanged: swipe.setCurrentIndex(currentIndex)
-                Material.background: Material.primary
-
-                TabButton {
-                    text: "+"
-                    onClicked: viewModel.addTab();
+                Repeater {
                 }
+                currentIndex: swipe.currentIndex
+                Material.background: Material.primary
             }
         }
     }
 
     PresenterProgress {}
 
-    //tab 集合view
     SwipeView {
         id: swipe
         anchors.fill: parent
-        onCurrentIndexChanged: tabBar.setCurrentIndex(currentIndex)
+        currentIndex: tabBar.currentIndex
     }
 
     Component {
@@ -75,18 +71,19 @@ Page {
             property MainTabItemViewModel viewModel: null
 
             text: viewModel.title
+            width: Math.max(100, tabBar.width / 5)
         }
     }
 
 
-    property var tabKeeper :[]//c++创建的component被qml gc问题，防止被删
+    property var tabKeeper :[]//because of c++ created component will be gc by qml, so add this component's reference
 
     function presentTab(item) {
         tabBar.insertItem(tabBar.count - 1, _newTab.createObject(tabBar, {viewModel: item.viewModel}));
 //        item.parent = swipe;
         swipe.addItem(item);
         tabKeeper.push(item);
-        tabBar.setCurrentIndex(tabBar.count - 2);
+//        tabBar.setCurrentIndex(tabBar.count - 2);
         return true;
     }
 

@@ -12,18 +12,6 @@ MainViewModel::~MainViewModel()
     qInfo(Q_FUNC_INFO);
 }
 
-//添加一个tab
-void MainViewModel::addTab()
-{
-    QtMvvm::getInput<QString>(tr("New Tab"), tr("Enter a tab title:"), this, [this](QString res, bool ok) {
-        if(ok) {
-            show<MainTabItemViewModel>({
-                                       {QStringLiteral("title"), res}
-                                   });
-        }
-    });
-}
-
 //添加笔记本的一项记录
 //void MainTabItemViewModel::addData(const QString &data)
 //{

@@ -14,9 +14,6 @@ class MainViewModel : public QtMvvm::ViewModel
 public:
     Q_INVOKABLE explicit MainViewModel(QObject *parent = nullptr);
     ~MainViewModel();
-
-public Q_SLOTS:
-    void addTab();
 };
 
 class MainTabItemViewModel : public QtMvvm::ViewModel
