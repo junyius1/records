@@ -22,7 +22,7 @@ HEADERS += \
         clipboard.h \
         #initdb.h \
         common.h \
-    #notesviewmodel.h \
+    noteviewmodel.h \
     saveFileData/savefile.h \
     saveFileData/savefiledata.h \
     saveFileData/savefilepool.h
@@ -36,7 +36,7 @@ SOURCES += \
         drawerviewmodel.cpp \
         clipboard.cpp \
         #initdb.cpp \
-        #notesviewmodel.cpp \
+        noteviewmodel.cpp \
         common.cpp \
     saveFileData/savefile.cpp \
     saveFileData/savefilepool.cpp

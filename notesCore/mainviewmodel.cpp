@@ -12,7 +12,7 @@ MainViewModel::~MainViewModel()
     qInfo(Q_FUNC_INFO);
 }
 
-//添加笔记本的一项记录
+//
 //void MainTabItemViewModel::addData(const QString &data)
 //{
 //    _notesModel->addData(data);

@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<MainViewModel>(url, 1, 1, "MainViewModel", QStringLiteral("MainViewModel cannot be created!"));
     qmlRegisterUncreatableType<MainTabItemViewModel>(url, 1, 1, "MainTabItemViewModel", QStringLiteral("MainTabItemViewModel cannot be created!"));
     qmlRegisterUncreatableType<DrawerViewModel>(url, 1, 1, "DrawerViewModel", QStringLiteral("DrawerViewModel cannot be created"));
-//    qmlRegisterUncreatableType<NotesViewModel>(url, 1, 1, "NotesViewModel", QStringLiteral("ViewModels cannot be created"));
+//    qmlRegisterUncreatableType<NoteViewModel>(url, 1, 1, "NoteViewModel", QStringLiteral("ViewModels cannot be created"));
 //    qmlRegisterUncreatableType<NotesTabItemViewModel>(url, 1, 1, "NotesTabItemViewModel", QStringLiteral("ViewModels cannot be created"));
 
     qmlRegisterType<Clipboard>(url,1,0,"Clipboard");
