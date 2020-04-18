@@ -23,6 +23,19 @@ Page {
       }
     }
 
+    signal openTab(string fileName, string filePath, int tabIndex, bool fileIsDir);
+
+    onOpenTab: {
+//        console.log("emit parameter", tabIndex, "==", tabBar.count);
+        if(fileIsDir){
+            popAfterIndex(tabIndex);
+            viewModel.show("MainTabItemViewModel*", {
+                               "title": fileName,
+                               "path": filePath
+                           })
+        }
+    }
+
     header: ContrastToolBar {
         height: 56 + tabBar.height
 
@@ -79,12 +92,22 @@ Page {
     property var tabKeeper :[]//because of c++ created component will be gc by qml, so add this component's reference
 
     function presentTab(item) {
-        tabBar.insertItem(tabBar.count - 1, _newTab.createObject(tabBar, {viewModel: item.viewModel}));
-//        item.parent = swipe;
+        tabBar.addItem(_newTab.createObject(tabBar, {viewModel: item.viewModel}));
+        item.parentView = tabView;
+        item.tabIndex = tabBar.count-1;
         swipe.addItem(item);
         tabKeeper.push(item);
-//        tabBar.setCurrentIndex(tabBar.count - 2);
+        tabBar.setCurrentIndex(item.tabIndex)
         return true;
+    }
+
+    function popAfterIndex(tabIndex)
+    {
+        for(var i =swipe.count-1; i > tabIndex; i --)
+        {
+            tabBar.takeItem(i).destroy();
+            swipe.takeItem(i).destroy();
+        }
     }
 
     function afterPop() {

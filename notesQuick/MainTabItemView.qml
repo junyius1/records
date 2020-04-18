@@ -8,6 +8,8 @@ import com.cross.notes 1.1
 
 Pane {
 	property MainTabItemViewModel viewModel: null
+    property MainView parentView: null
+    property int tabIndex: -1
 
     GridLayout {
         columns: 2
@@ -73,19 +75,15 @@ Pane {
                         hoverEnabled: true
                         onClicked: {
                             fileListView.currentIndex = index
-                            viewModel.show("MainTabItemViewModel*", {
-                                               "title": fileName,
-                                               "path": filePath
-                                           })
-                            console.log("end onClicked");
+                            emit: parentView.openTab(fileName, filePath, tabIndex, fileIsDir);
                         }
-                        onDoubleClicked: {
-                            fileListView.currentIndex = index
-                            if (model.hasModelChildren){
-                                delegateModel.rootPathIndex = delegateModel.modelIndex(index)
-                                delegateModel.rootIndex = delegateModel.rootPathIndex
-                            }
-                        }
+//                        onDoubleClicked: {
+//                            fileListView.currentIndex = index
+//                            if (model.hasModelChildren){
+//                                delegateModel.rootPathIndex = delegateModel.modelIndex(index)
+//                                delegateModel.rootIndex = delegateModel.rootPathIndex
+//                            }
+//                        }
                     }
                 }
             }
