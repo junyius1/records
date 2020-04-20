@@ -17,6 +17,12 @@ public:
     QSharedPointer<SaveFile> getSaveFile(const QString &path);
     bool delFileRead(const QString &path);
     bool delFileSave(const QString &path);
+
+    bool addFileRead(const QString &path, SaveFile* saveFile);
+    bool addFileSave(const QString &path, SaveFile* saveFile);
+
+    QSharedPointer<SaveFile> findFileRead(const QString &path);
+    QSharedPointer<SaveFile> findFileSave(const QString &path);
     static SaveFilePool * instance();
 
 private:

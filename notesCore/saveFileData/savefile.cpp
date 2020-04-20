@@ -6,6 +6,8 @@ SaveFile::SaveFile(const QString &filePath, const QString &keyword)
 {
     _path = filePath;
    _keyword = keyword;
+   connect(&_futureWatcher, &QFutureWatcher<bool>::finished, this, &SaveFile::onSaveFile);
+   connect(&_futureReadWatcher, &QFutureWatcher<QString>::finished, this, &SaveFile::onReadFile);
 }
 
 void SaveFile::save()
@@ -15,6 +17,7 @@ void SaveFile::save()
             new QTimer(),
             &QTimer::deleteLater
          );
+    SaveFilePool::instance()->addFileSave(getPath(), this);
 
     connect(_timer.data(), &QTimer::timeout, this, &SaveFile::timeoutCB);
     _timer->start(50000);
@@ -23,9 +26,9 @@ void SaveFile::save()
 void SaveFile::read()
 {
     waitingThread();
+    SaveFilePool::instance()->addFileRead(getPath(), this);
     _futureRead = QtConcurrent::run(this, &SaveFile::runReadFile);
-    connect(&_futureReadWatcher, &QFutureWatcherBase::finished, this, &SaveFile::onReadFile);
-    _futureWatcher.setFuture(_future);
+    _futureReadWatcher.setFuture(_futureRead);
 }
 
 void SaveFile::onReadFile()
@@ -56,7 +59,6 @@ bool SaveFile::timeoutCB()
     QVariant variant;
     _fileData->data2QVariant(variant);
     _future = QtConcurrent::run(this, &SaveFile::runSaveFile, variant);
-    connect(&_futureWatcher, &QFutureWatcherBase::finished, this, &SaveFile::onSaveFile);
     _futureWatcher.setFuture(_future);
     _timer->stop();
     _timer.clear();
@@ -79,11 +81,14 @@ bool SaveFile::runSaveFile(const QVariant &data)
 
 QString SaveFile::runReadFile()
 {
-    QFile file(_keyword);
-    file.open(QIODevice::ReadOnly);
-    QString s;
+    QString path(getPath());
+    QFile file(path);
+    if(file.open(QIODevice::ReadOnly)){
+        QString s;
 
-    QTextStream ts(&file);
-    s.append(ts.readAll());
-    return s;
+        QTextStream ts(&file);
+        s.append(ts.readAll());
+        return s;
+    }
+    return QString(QLatin1String("error open file %s!")).arg(path);
 }

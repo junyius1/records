@@ -32,6 +32,11 @@ public:
     {
         _noteModelData = data;
     }
+    void reset()
+    {
+        beginResetModel();
+        endResetModel();
+    }
 
 private:
     QSharedPointer<NoteModelData> _noteModelData;

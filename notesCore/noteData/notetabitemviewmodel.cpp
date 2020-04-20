@@ -52,9 +52,11 @@ void NoteTabItemViewModel::openNote(const QString &filePath, const QString &keyw
         connect(saveFile.data(), &SaveFile::onReadFileOK, this, &NoteTabItemViewModel::onReadFileOK);
     }
     _noteModel->setNoteModelData(p);
+    p->getSaveFile()->read();
 }
 
 void NoteTabItemViewModel::onReadFileOK()
 {
+    _noteModel->reset();
     qDebug() << "onReadFileOK()";
 }

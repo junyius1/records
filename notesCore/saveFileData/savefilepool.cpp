@@ -10,13 +10,48 @@ SaveFilePool::SaveFilePool()
 
 QSharedPointer<SaveFile> SaveFilePool::getSaveFile(const QString &path)
 {
-    SAVE_FILE_MAP::iterator it = _fileSaveMap.find(path);
-    if(it != _fileSaveMap.end())
+    QSharedPointer<SaveFile> p = findFileSave(path);
+    if(p.isNull())
+    {
+        return findFileRead(path);
+    }
+    return p;
+}
+
+bool SaveFilePool::addFileRead(const QString &path, SaveFile* saveFile)
+{
+    QSharedPointer<SaveFile> p = findFileSave(path);
+    if(p.isNull())
+    {
+        _fileReadMap[path] = QSharedPointer<SaveFile>(saveFile);
+    }
+    return true;
+}
+
+bool SaveFilePool::addFileSave(const QString &path, SaveFile* saveFile)
+{
+    QSharedPointer<SaveFile> p = findFileSave(path);
+    if(p.isNull())
+    {
+        _fileSaveMap[path] = QSharedPointer<SaveFile>(saveFile);
+    }
+    return true;
+}
+
+QSharedPointer<SaveFile> SaveFilePool::findFileRead(const QString &path)
+{
+    SAVE_FILE_MAP::iterator it = _fileReadMap.find(path);
+    if(it != _fileReadMap.end())
     {
         return it.value();
     }
-    it = _fileReadMap.find(path);
-    if(it != _fileReadMap.end())
+    return nullptr;
+}
+
+QSharedPointer<SaveFile> SaveFilePool::findFileSave(const QString &path)
+{
+    SAVE_FILE_MAP::iterator it = _fileSaveMap.find(path);
+    if(it != _fileSaveMap.end())
     {
         return it.value();
     }
