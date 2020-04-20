@@ -1,7 +1,7 @@
 #include "configmodel.h"
 
 ConfigModel *ConfigModel::_instance = nullptr;
-QString ConfigModelData::data2QString()
+void ConfigModelData::data2QVariant(QVariant &variant)
 {
     QString ret;
     for(CONFIG_DATA::iterator it = _configData.begin(); it != _configData.end(); it++)
@@ -11,7 +11,7 @@ QString ConfigModelData::data2QString()
         ret += it.value();
         ret.arg('\n');
     }
-    return ret;
+    variant.setValue(ret);
 }
 
 ConfigModel::ConfigModel(QObject *parent)

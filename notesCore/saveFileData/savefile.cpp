@@ -1,9 +1,11 @@
 #include "savefile.h"
+#include "saveFileData/savefilepool.h"
 #include <QtConcurrent>
 
-SaveFile::SaveFile()
+SaveFile::SaveFile(const QString &filePath, const QString &keyword)
 {
-
+    _path = filePath;
+   _keyword = keyword;
 }
 
 void SaveFile::save()
@@ -28,7 +30,9 @@ void SaveFile::read()
 
 void SaveFile::onReadFile()
 {
-    _fileData->qString2Data(_futureReadWatcher.result());
+    _fileData->qVariant2Data(_futureReadWatcher.result());
+    emit onReadFileOK();
+    SaveFilePool::instance()->delFileRead(getPath());
 }
 
 void SaveFile::waitingThread(){
@@ -40,10 +44,19 @@ void SaveFile::waitingThread(){
     }
 }
 
+void SaveFile::onSaveFile()
+{
+//    emit onWriteFileOK();
+    SaveFilePool::instance()->delFileSave(getPath());
+}
+
 bool SaveFile::timeoutCB()
 {
     waitingThread();
-    _future = QtConcurrent::run(this, &SaveFile::runSaveFile, _fileData->data2QString());
+    QVariant variant;
+    _fileData->data2QVariant(variant);
+    _future = QtConcurrent::run(this, &SaveFile::runSaveFile, variant);
+    connect(&_futureWatcher, &QFutureWatcherBase::finished, this, &SaveFile::onSaveFile);
     _futureWatcher.setFuture(_future);
     _timer->stop();
     _timer.clear();
@@ -51,21 +64,22 @@ bool SaveFile::timeoutCB()
     return true;
 }
 
-bool SaveFile::runSaveFile(const QString &data)
+bool SaveFile::runSaveFile(const QVariant &data)
 {
-    QSaveFile qSaveFile(_fileName);
+    QSaveFile qSaveFile(_keyword);
     if(!qSaveFile.open(QIODevice::WriteOnly))
     {
         return false;
     }
-    qSaveFile.write(data.toStdString().c_str());
+    QString t = data.toString();
+    qSaveFile.write(t.toStdString().c_str());
     qSaveFile.commit();
     return true;
 }
 
 QString SaveFile::runReadFile()
 {
-    QFile file(_fileName);
+    QFile file(_keyword);
     file.open(QIODevice::ReadOnly);
     QString s;
 

@@ -1,7 +1,7 @@
 #include "mainviewmodel.h"
 #include "message.h"
 #include <QtCore/QDebug>
-#include "notemodel.h"
+#include "noteData/notemodel.h"
 
 MainViewModel::MainViewModel(QObject *parent) :
     ViewModel(parent)

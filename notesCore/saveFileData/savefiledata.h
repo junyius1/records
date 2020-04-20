@@ -1,14 +1,14 @@
 #ifndef SAVEFILEDATA_H
 #define SAVEFILEDATA_H
 
-#include <QString>
+#include <QVariant>
 
 class ISaveFileData
 {
 public:
-    virtual QString data2QString() =0;
-    virtual void qString2Data(const QString &str) =0;
-    virtual ~ISaveFileData() =0;
+    virtual void data2QVariant(QVariant &variant) =0;
+    virtual void qVariant2Data(const QVariant &str) =0;
+    virtual ~ISaveFileData(){}
 };
 
 #endif // SAVEFILEDATA_H

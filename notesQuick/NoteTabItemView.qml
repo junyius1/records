@@ -7,6 +7,8 @@ import com.cross.notes 1.1
 
 Pane {
     property NoteTabItemViewModel viewModel: null
+    property MainView parentView: null
+    property int tabIndex: -1
 
     GridLayout {
         columns: 2
@@ -21,7 +23,7 @@ Pane {
 
             ScrollBar.vertical: ScrollBar {}
 
-            model: viewModel.notesModel
+            model: viewModel.noteModel
 
             delegate: WordsDelegate {}
         }

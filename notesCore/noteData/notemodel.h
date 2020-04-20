@@ -3,29 +3,7 @@
 
 #include <QAbstractItemModel>
 #include "saveFileData/savefile.h"
-
-class NoteModelData : public ISaveFileData
-{
-public:
-    NoteModelData()
-    {
-        QSharedPointer<ISaveFileData> p(this);
-        _saveNoteData.setSaveFileData(p);
-    }
-    QString data2QString() override;
-    void qString2Data(const QString &str) override;
-    QStringList _noteData;
-    SaveFile _saveNoteData;
-    ~NoteModelData() override {}
-    const QStringList &getCNoteData()
-    {
-        return _noteData;
-    }
-    QStringList &getNoteData()
-    {
-        return _noteData;
-    }
-};
+#include "notemodeldata.h"
 
 class NoteModel : public QAbstractItemModel
 {
@@ -37,8 +15,6 @@ public:
         Title = 0,
         ColumnCount
     };
-
-    static NoteModel * instance();
 
     explicit NoteModel(QObject *parent = nullptr);
     ~NoteModel() override;
@@ -52,9 +28,12 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole) override;
+    void setNoteModelData(QSharedPointer<NoteModelData> data)
+    {
+        _noteModelData = data;
+    }
 
 private:
-    static NoteModel *_instance;
     QSharedPointer<NoteModelData> _noteModelData;
 };
 

@@ -15,14 +15,15 @@ HEADERS += \
     common.h \
     configmodel.h \
     filesystemmodel.h \
-    notemodel.h \
+    noteData/notedatapool.h \
+    noteData/notemodel.h \
+    noteData/notemodeldata.h \
+    noteData/notetabitemviewmodel.h \
         notesapp.h \
         mainviewmodel.h \
         drawerviewmodel.h \
         clipboard.h \
-        #initdb.h \
         common.h \
-    noteviewmodel.h \
     saveFileData/savefile.h \
     saveFileData/savefiledata.h \
     saveFileData/savefilepool.h
@@ -30,13 +31,14 @@ HEADERS += \
 SOURCES += \
     configmodel.cpp \
     filesystemmodel.cpp \
-    notemodel.cpp \
+    noteData/notedatapool.cpp \
+    noteData/notemodel.cpp \
+    noteData/notemodeldata.cpp \
+    noteData/notetabitemviewmodel.cpp \
         notesapp.cpp \
         mainviewmodel.cpp \
         drawerviewmodel.cpp \
         clipboard.cpp \
-        #initdb.cpp \
-        noteviewmodel.cpp \
         common.cpp \
     saveFileData/savefile.cpp \
     saveFileData/savefilepool.cpp

@@ -11,6 +11,7 @@
 
 class SaveFile : public QObject
 {
+    Q_OBJECT
 private:
     QSharedPointer<QTimer> _timer;
     QSharedPointer<ISaveFileData> _fileData;
@@ -18,24 +19,31 @@ private:
     QFutureWatcher<bool> _futureWatcher;
     QFuture<QString> _futureRead;
     QFutureWatcher<QString> _futureReadWatcher;
-    QString _fileName;
-//public Q_SIGNAL:
-//    void onReadFileOK();
+    QString _keyword;
+    QString _path;
+Q_SIGNALS:
+    void onReadFileOK();
+//    void onSaveFileOK();
 public Q_SLOTS:
     bool timeoutCB();
     void onReadFile();
+    void onSaveFile();
 
 public:
+    QString getPath()
+    {
+        return _path + _keyword;
+    }
     void setSaveFileData(QSharedPointer<ISaveFileData> &other)
     {
         _fileData = other;
     }
-    bool runSaveFile(const QString &data);
+    bool runSaveFile(const QVariant &data);
     QString runReadFile();
     void save();
     void read();
     bool switchNewData();
-    SaveFile();
+    SaveFile(const QString &filePath, const QString &keyword);
     QSharedPointer<ISaveFileData> getFileData()
     {
         return _fileData;

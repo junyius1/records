@@ -26,12 +26,18 @@ Page {
     signal openTab(string fileName, string filePath, int tabIndex, bool fileIsDir);
 
     onOpenTab: {
-//        console.log("emit parameter", tabIndex, "==", tabBar.count);
+//        console.log("emit parameter", fileIsDir, "==", filePath);
         if(fileIsDir){
             popAfterIndex(tabIndex);
             viewModel.show("MainTabItemViewModel*", {
                                "title": fileName,
                                "path": filePath
+                           })
+        } else{
+            viewModel.show("NoteTabItemViewModel*", {
+                               "title": fileName,
+                               "filePath": filePath,
+                               "keyword": fileName
                            })
         }
     }
@@ -81,9 +87,9 @@ Page {
     Component {
         id: _newTab
         TabButton {
-            property MainTabItemViewModel viewModel: null
+            property string title: ""
 
-            text: viewModel.title
+            text: title
             width: Math.max(100, tabBar.width / 5)
         }
     }
@@ -92,7 +98,7 @@ Page {
     property var tabKeeper :[]//because of c++ created component will be gc by qml, so add this component's reference
 
     function presentTab(item) {
-        tabBar.addItem(_newTab.createObject(tabBar, {viewModel: item.viewModel}));
+        tabBar.addItem(_newTab.createObject(tabBar, {title: item.viewModel.title}));
         item.parentView = tabView;
         item.tabIndex = tabBar.count-1;
         swipe.addItem(item);

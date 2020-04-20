@@ -1,16 +1,5 @@
 #include "notemodel.h"
 
-NoteModel *NoteModel::_instance = nullptr;
-QString NoteModelData::data2QString()
-{
-    return _noteData.join('\n');
-}
-
-void NoteModelData::qString2Data(const QString &str)
-{
-    _noteData = str.split('\n');
-}
-
 NoteModel::NoteModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -67,15 +56,4 @@ bool NoteModel::setData(const QModelIndex &index, const QVariant &value, int rol
         emit dataChanged(index, index);
         return true;
     } return false;
-}
-
-NoteModel * NoteModel::instance()
-{
-    if(_instance)
-    {
-        return _instance;
-    }
-
-    _instance = new NoteModel();
-    return _instance;
 }

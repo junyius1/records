@@ -9,14 +9,14 @@ import com.cross.notes 1.1
 Component {
 
     Connections {
-      target: notesModel
+      target: noteModel
       onEnterNoteName: {
-          if(notesModel.getCurNodeName()===""){
-              if(!notesModel.inputDialog){
-                  notesModel.inputDialog = true;
+          if(noteModel.getCurNodeName()===""){
+              if(!noteModel.inputDialog){
+                  noteModel.inputDialog = true;
                   // 弹出输入框
                   Message.getInput("Enter Note Name", "Name:", "QString", function(result){
-                      notesModel.addNoteName(result);
+                      noteModel.addNoteName(result);
                   }, "")
               }
           }

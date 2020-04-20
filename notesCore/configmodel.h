@@ -14,7 +14,7 @@ public:
         QSharedPointer<ISaveFileData> p(this);
         _saveNoteData->setSaveFileData(p);
     }
-    QString data2QString() override;
+    void data2QVariant(QVariant &variant) override;
     CONFIG_DATA _configData;
     QSharedPointer<SaveFile> _saveNoteData;
     ~ConfigModelData() override {}
