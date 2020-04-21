@@ -16,6 +16,7 @@ public:
     QSharedPointer<NoteModelData> getNoteModelData(const QString &path);
     bool delNoteModelData(const QString &path);
     static NoteDataPool * instance();
+    ~NoteDataPool();
 
 private:
     static NoteDataPool *_instance;

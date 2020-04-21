@@ -91,3 +91,16 @@ SaveFilePool * SaveFilePool::instance()
     return _instance;
 }
 
+SaveFilePool::~SaveFilePool()
+{
+    for(SAVE_FILE_MAP::iterator it = _fileSaveMap.begin(); it != _fileSaveMap.end(); it++)
+    {
+        it->clear();
+    }
+    _fileSaveMap.clear();
+    for(SAVE_FILE_MAP::iterator it = _fileReadMap.begin(); it != _fileReadMap.end(); it++)
+    {
+        it->clear();
+    }
+    _fileReadMap.clear();
+}

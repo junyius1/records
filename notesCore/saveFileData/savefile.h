@@ -34,7 +34,7 @@ public:
     {
         return _path + _keyword;
     }
-    void setSaveFileData(QSharedPointer<ISaveFileData> &other)
+    void setSaveFileData(QSharedPointer<ISaveFileData> other)
     {
         _fileData = other;
     }
@@ -49,6 +49,7 @@ public:
         return _fileData;
     }
     void waitingThread();
+    ~SaveFile();
 };
 
 #endif // SAVEFILE_H

@@ -7,6 +7,7 @@ NoteModel::NoteModel(QObject *parent)
 
 NoteModel::~NoteModel()
 {
+    _noteModelData.clear();
 }
 
 int NoteModel::rowCount(const QModelIndex &parent) const

@@ -40,3 +40,12 @@ NoteDataPool * NoteDataPool::instance()
     _instance = new NoteDataPool();
     return _instance;
 }
+
+NoteDataPool::~NoteDataPool()
+{
+     for(NOTE_MODEL_DATA_MAP::iterator it = _noteModelDataMap.begin(); it != _noteModelDataMap.end(); it++)
+     {
+         it->clear();
+     }
+     _noteModelDataMap.clear();
+}

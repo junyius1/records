@@ -24,6 +24,7 @@ public:
     QSharedPointer<SaveFile> findFileRead(const QString &path);
     QSharedPointer<SaveFile> findFileSave(const QString &path);
     static SaveFilePool * instance();
+    ~SaveFilePool();
 
 private:
     static SaveFilePool *_instance;

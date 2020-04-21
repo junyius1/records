@@ -92,3 +92,8 @@ QString SaveFile::runReadFile()
     }
     return QString(QLatin1String("error open file %s!")).arg(path);
 }
+
+SaveFile::~SaveFile()
+{
+    _fileData.clear();
+}

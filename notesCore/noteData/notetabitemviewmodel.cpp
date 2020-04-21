@@ -49,6 +49,7 @@ void NoteTabItemViewModel::openNote(const QString &filePath, const QString &keyw
     {
         p.reset(new LineStringModelData(filePath, keyword));
         const QSharedPointer<SaveFile> saveFile = p->getSaveFile();
+        saveFile->setSaveFileData(p);
         connect(saveFile.data(), &SaveFile::onReadFileOK, this, &NoteTabItemViewModel::onReadFileOK);
     }
     _noteModel->setNoteModelData(p);

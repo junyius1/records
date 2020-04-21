@@ -12,9 +12,7 @@ protected:
 public:
     NoteModelData(const QString &filePath, const QString &keyword)
     {
-        QSharedPointer<ISaveFileData> p(this);
         _saveNoteData.reset(new SaveFile(filePath, keyword));
-        _saveNoteData->setSaveFileData(p);
     }
 
     const QList<QVariant> &getCNoteData()
