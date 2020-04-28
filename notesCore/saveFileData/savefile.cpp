@@ -2,11 +2,10 @@
 #include "saveFileData/savefilepool.h"
 #include <QtConcurrent>
 
-SaveFile::SaveFile(const QString &filePath, const QString &keyword)
+SaveFile::SaveFile(const QString &filePath, const QString &keyword):_readCodec(QLatin1String("UTF-8"))
 {
     _path = filePath;
    _keyword = keyword;
-   _readCodec = QLatin1String("UTF-8");
    connect(&_futureWatcher, &QFutureWatcher<bool>::finished, this, &SaveFile::onSaveFile);
    connect(&_futureReadWatcher, &QFutureWatcher<QString>::finished, this, &SaveFile::onReadFile);
 }

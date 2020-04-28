@@ -91,10 +91,10 @@ Page {
         }
     }
     footer:Rectangle {
-                id: footer
                 width: parent.width
                 height: 20
                 color:"#E0E0E0"
+                clip: true
                 Text {
                     id:footer_text
                     x:0
@@ -111,7 +111,7 @@ Page {
 
                                     PropertyAnimation {
                                         from:0
-                                        to: -footer_text.width+footer.width
+                                        to: -footer_text.width
                                         duration: 5000
                                     }
                                 }
