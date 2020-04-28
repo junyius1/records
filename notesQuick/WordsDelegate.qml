@@ -64,7 +64,7 @@ import QtQuick.Controls 2.12
                 highlight.color = palette.text;
                 descriptionText.color = palette.highlightedText;
             } else{
-                highlight.color = palette.highlightedText;
+                highlight.color = index %2 ?"transparent":"#f0f0f0";
                 descriptionText.color = palette.text;
             }
 

@@ -5,7 +5,7 @@ import de.framework.QtMvvm.Core 1.1
 import de.framework.QtMvvm.Quick 1.1
 import com.cross.notes 1.1
 
-Pane {
+Page {
     property NoteTabItemViewModel viewModel: null
     property MainView parentView: null
     property int tabIndex: -1
@@ -28,54 +28,7 @@ Pane {
             delegate: WordsDelegate {}
         }
     }
-    Rectangle {
-            id: rect
-            width: parent.width
-            height: 20
-            color:"#00ff00"
-            x:0
-            y:parent.height-20
-            Text {
-                x:parent.width/3*2
 
-                anchors.verticalCenter :parent.verticalCenter
-                text: "UTF-8"
-                MouseArea{
-                    anchors.fill: parent;
-                    onClicked: {
-
-                        codecMenu.popup();
-                    }
-                }
-            }
-
-            states: [
-            State{
-                name:"display"
-                PropertyChanges {
-                    target: rect
-                    y:parent.height-20
-                }
-            },State{
-                    name:"hide"
-                    PropertyChanges {
-                        target: rect
-                        y:parent.height
-                    }
-                }]
-            state:"display"
-
-            transitions:Transition{
-                    from:"display"
-                    to: "hide"
-                    reversible: true;
-                NumberAnimation{
-                    property: "y";
-                    easing.type: Easing.InOutQuad;
-                    duration: 500;
-                }
-            }
-        }
 
     Menu {
         id: codecMenu
@@ -221,6 +174,25 @@ Pane {
         }
 
     }
+    footer:Rectangle {
+                id: rect
+                width: parent.width
+                height: 20
+                color:"#E0E0E0"
+                Text {
+                    x:parent.width/3*2
+
+                    anchors.verticalCenter :parent.verticalCenter
+                    text: viewModel.getCodec()
+                    MouseArea{
+                        anchors.fill: parent;
+                        onClicked: {
+
+                            codecMenu.popup();
+                        }
+                    }
+                }
+            }
 
 //    Clipboard {
 //        id:clipboard

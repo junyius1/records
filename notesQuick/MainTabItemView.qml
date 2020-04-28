@@ -6,7 +6,7 @@ import de.framework.QtMvvm.Core 1.1
 import de.framework.QtMvvm.Quick 1.1
 import com.cross.notes 1.1
 
-Pane {
+Page {
 	property MainTabItemViewModel viewModel: null
     property MainView parentView: null
     property int tabIndex: -1
@@ -14,7 +14,8 @@ Pane {
     GridLayout {
         columns: 2
         anchors.fill: parent
-
+        anchors.leftMargin: 2
+        anchors.rightMargin: 2
         ListView {
             id: fileListView
             x: 57
@@ -89,4 +90,33 @@ Pane {
             }
         }
     }
+    footer:Rectangle {
+                id: footer
+                width: parent.width
+                height: 20
+                color:"#E0E0E0"
+                Text {
+                    id:footer_text
+                    x:0
+
+                    anchors.verticalCenter :parent.verticalCenter
+                    text: viewModel.getCurDirectory();
+                    SequentialAnimation on x {
+                                    loops: Animation.Infinite
+                                    PropertyAnimation {
+                                        from:0
+                                        to: 0
+                                        duration: 2000
+                                    }
+
+                                    PropertyAnimation {
+                                        from:0
+                                        to: -footer_text.width+footer.width
+                                        duration: 5000
+                                    }
+                                }
+
+                }
+            }
+
 }

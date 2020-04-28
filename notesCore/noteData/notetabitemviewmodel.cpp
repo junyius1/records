@@ -67,3 +67,8 @@ void NoteTabItemViewModel::setCodec(const QString &codecName)
     _noteModel->getNoteModelData()->clear();
     _noteModel->getNoteModelData()->read(codecName);
 }
+
+const QString NoteTabItemViewModel::getCodec()
+{
+   return _noteModel->getNoteModelData()->getCodec();
+}

@@ -10,6 +10,10 @@ protected:
     QSharedPointer<SaveFile> _saveNoteData;
 
 public:
+    const QString &getCodec()
+    {
+        return _saveNoteData->getCodec();
+    }
     void clear()
     {
         _noteData.clear();
@@ -19,7 +23,7 @@ public:
         _saveNoteData.reset(new SaveFile(filePath, keyword));
     }
 
-    void read(const QString codecName=QLatin1String(""))
+    void read(const QString codecName=QLatin1String("UTF-8"))
     {
         _saveNoteData->read(_saveNoteData, codecName);
     }

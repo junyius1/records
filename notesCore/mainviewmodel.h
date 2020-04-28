@@ -45,6 +45,7 @@ public:
     Q_INVOKABLE QModelIndex getRootPathIndex(){
         return _fileSystemModel->getRootPathIndex();
     }
+    Q_INVOKABLE QString getCurDirectory() const;
 private:
     QString _title;
     FileSystemModel *_fileSystemModel;

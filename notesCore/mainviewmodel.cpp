@@ -46,3 +46,8 @@ void MainTabItemViewModel::onInit(const QVariantHash &params)
     _fileSystemModel = new FileSystemModel(params.value(QStringLiteral("path"), QDir::currentPath()).toString());
     emit titleChanged(_title);
 }
+
+QString MainTabItemViewModel::getCurDirectory() const
+{
+    return _fileSystemModel->rootPath();
+}

@@ -21,10 +21,15 @@ private:
     QFutureWatcher<QString> _futureReadWatcher;
     QString _keyword;
     QString _path;
+    QString _readCodec;
 Q_SIGNALS:
     void onReadFileOK();
 //    void onSaveFileOK();
 public Q_SLOTS:
+    const QString &getCodec()
+    {
+        return _readCodec;
+    }
     bool timeoutCB();
     void onReadFile();
     void onSaveFile();
@@ -41,7 +46,7 @@ public:
     bool runSaveFile(const QVariant &data);
     QString runReadFile(const QString &codecName);
     void save(const QSharedPointer<SaveFile> sp);
-    void read(const QSharedPointer<SaveFile> sp, const QString codecName=QLatin1String(""));
+    void read(const QSharedPointer<SaveFile> sp, const QString codecName=QLatin1String("UTF-8"));
     bool switchNewData();
     SaveFile(const QString &filePath, const QString &keyword);
     QSharedPointer<ISaveFileData> getFileData()

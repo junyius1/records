@@ -6,6 +6,7 @@ SaveFile::SaveFile(const QString &filePath, const QString &keyword)
 {
     _path = filePath;
    _keyword = keyword;
+   _readCodec = QLatin1String("UTF-8");
    connect(&_futureWatcher, &QFutureWatcher<bool>::finished, this, &SaveFile::onSaveFile);
    connect(&_futureReadWatcher, &QFutureWatcher<QString>::finished, this, &SaveFile::onReadFile);
 }
@@ -93,8 +94,8 @@ QString SaveFile::runReadFile(const QString &codecName)
     if(file.open(QIODevice::ReadOnly)){
 
         QTextStream ts(&file);
-        if(codecName != QLatin1String(""))
-            ts.setCodec(codecName.toLatin1());
+        Q_ASSERT(codecName != QLatin1String(""));
+        ts.setCodec(codecName.toLatin1());
 
         return ts.readAll();
     }

@@ -36,6 +36,7 @@ public:
     //note item list
     Q_INVOKABLE NoteModel *noteModel() const;
     Q_INVOKABLE void setCodec(const QString &codecName);
+    Q_INVOKABLE const QString getCodec();
 private:
     QString _title;
     NoteModel *_noteModel;
