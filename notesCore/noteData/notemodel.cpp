@@ -22,11 +22,12 @@ int NoteModel::columnCount(const QModelIndex &parent) const
 
 QModelIndex NoteModel::index(int row, int column, const QModelIndex &parent) const
 {
-    return _noteModelData && !parent.isValid()
+     if(_noteModelData && !parent.isValid()
             && row >= 0 && row < _noteModelData->getCNoteData().size()
-            && column >= 0 && column < ColumnCount
-        ? createIndex(row, column)
-        : QModelIndex();
+            && column >= 0 && column < ColumnCount){
+        return createIndex(row, column);
+     }else
+        return QModelIndex();
 }
 
 QModelIndex NoteModel::parent(const QModelIndex &child) const
@@ -46,7 +47,7 @@ QVariant NoteModel::data(const QModelIndex &index, int role) const
 
         return value;
     }
-    return QVariant();
+    return QVariant(QLatin1String(""));
 }
 
 bool NoteModel::setData(const QModelIndex &index, const QVariant &value, int role)

@@ -18,8 +18,8 @@ public:
     bool delFileRead(const QString &path);
     bool delFileSave(const QString &path);
 
-    bool addFileRead(const QString &path, SaveFile* saveFile);
-    bool addFileSave(const QString &path, SaveFile* saveFile);
+    bool addFileRead(const QString &path, const QSharedPointer<SaveFile> sp);
+    bool addFileSave(const QString &path, const QSharedPointer<SaveFile> sp);
 
     QSharedPointer<SaveFile> findFileRead(const QString &path);
     QSharedPointer<SaveFile> findFileSave(const QString &path);

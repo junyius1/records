@@ -18,22 +18,22 @@ QSharedPointer<SaveFile> SaveFilePool::getSaveFile(const QString &path)
     return p;
 }
 
-bool SaveFilePool::addFileRead(const QString &path, SaveFile* saveFile)
+bool SaveFilePool::addFileRead(const QString &path, const QSharedPointer<SaveFile> sp)
 {
     QSharedPointer<SaveFile> p = findFileSave(path);
     if(p.isNull())
     {
-        _fileReadMap[path] = QSharedPointer<SaveFile>(saveFile);
+        _fileReadMap[path] = sp;
     }
     return true;
 }
 
-bool SaveFilePool::addFileSave(const QString &path, SaveFile* saveFile)
+bool SaveFilePool::addFileSave(const QString &path, const QSharedPointer<SaveFile> sp)
 {
     QSharedPointer<SaveFile> p = findFileSave(path);
     if(p.isNull())
     {
-        _fileSaveMap[path] = QSharedPointer<SaveFile>(saveFile);
+        _fileSaveMap[path] = sp;
     }
     return true;
 }

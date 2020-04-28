@@ -10,9 +10,18 @@ protected:
     QSharedPointer<SaveFile> _saveNoteData;
 
 public:
+    void clear()
+    {
+        _noteData.clear();
+    }
     NoteModelData(const QString &filePath, const QString &keyword)
     {
         _saveNoteData.reset(new SaveFile(filePath, keyword));
+    }
+
+    void read(const QString codecName=QLatin1String(""))
+    {
+        _saveNoteData->read(_saveNoteData, codecName);
     }
 
     const QList<QVariant> &getCNoteData()
@@ -43,6 +52,20 @@ public:
     void qVariant2Data(const QVariant &variant) override;
 
     ~LineStringModelData() override {}
+
+};
+
+class XmlStringModelData : public NoteModelData
+{
+public:
+    XmlStringModelData(const QString &filePath, const QString &keyword):NoteModelData(filePath, keyword)
+    {
+    }
+
+    void data2QVariant(QVariant &variant) override;
+    void qVariant2Data(const QVariant &variant) override;
+
+    ~XmlStringModelData() override {}
 
 };
 

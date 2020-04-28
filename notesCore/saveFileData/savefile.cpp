@@ -10,25 +10,25 @@ SaveFile::SaveFile(const QString &filePath, const QString &keyword)
    connect(&_futureReadWatcher, &QFutureWatcher<QString>::finished, this, &SaveFile::onReadFile);
 }
 
-void SaveFile::save()
+void SaveFile::save(const QSharedPointer<SaveFile> sp)
 {
     if(_timer) return;
     _timer = QSharedPointer<QTimer> (
             new QTimer(),
             &QTimer::deleteLater
          );
-    SaveFilePool::instance()->addFileSave(getPath(), this);
+    SaveFilePool::instance()->addFileSave(getPath(), sp);
 
     connect(_timer.data(), &QTimer::timeout, this, &SaveFile::timeoutCB);
     _timer->start(50000);
 }
 
-void SaveFile::read()
+void SaveFile::read(const QSharedPointer<SaveFile> sp, const QString codecName)
 {
     waitingThread();
-    SaveFilePool::instance()->addFileRead(getPath(), this);
-    _futureRead = QtConcurrent::run(this, &SaveFile::runReadFile);
-    _futureReadWatcher.setFuture(_futureRead);
+    SaveFilePool::instance()->addFileRead(getPath(), sp);
+    QFuture<QString> futureRead = QtConcurrent::run(this, &SaveFile::runReadFile, codecName);
+    _futureReadWatcher.setFuture(futureRead);
 }
 
 void SaveFile::onReadFile()
@@ -58,8 +58,8 @@ bool SaveFile::timeoutCB()
     waitingThread();
     QVariant variant;
     _fileData->data2QVariant(variant);
-    _future = QtConcurrent::run(this, &SaveFile::runSaveFile, variant);
-    _futureWatcher.setFuture(_future);
+    QFuture<bool> future = QtConcurrent::run(this, &SaveFile::runSaveFile, variant);
+    _futureWatcher.setFuture(future);
     _timer->stop();
     _timer.clear();
     qDebug() << "the time value =" << _timer;
@@ -79,16 +79,24 @@ bool SaveFile::runSaveFile(const QVariant &data)
     return true;
 }
 
-QString SaveFile::runReadFile()
+//QString GetCorrectUnicode(const QByteArray &ba, const char *codecName)
+//{
+//    QTextCodec::ConverterState state;
+//    QTextCodec *codec = QTextCodec::codecForName(codecName);
+//    return codec->toUnicode( ba.constData(), ba.size(), &state);
+//}
+
+QString SaveFile::runReadFile(const QString &codecName)
 {
     QString path(getPath());
     QFile file(path);
     if(file.open(QIODevice::ReadOnly)){
-        QString s;
 
         QTextStream ts(&file);
-        s.append(ts.readAll());
-        return s;
+        if(codecName != QLatin1String(""))
+            ts.setCodec(codecName.toLatin1());
+
+        return ts.readAll();
     }
     return QString(QLatin1String("error open file %s!")).arg(path);
 }

@@ -86,7 +86,7 @@ import QtQuick.Controls 2.12
             width: parent.width
             wrapMode: Text.WordWrap
             font.pixelSize: 14
-            textFormat: Text.StyledText
+            textFormat: Text.PlainText
             horizontalAlignment: Qt.AlignLeft
         }
 

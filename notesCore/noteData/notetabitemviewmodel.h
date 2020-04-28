@@ -35,6 +35,7 @@ public Q_SLOTS:
 public:
     //note item list
     Q_INVOKABLE NoteModel *noteModel() const;
+    Q_INVOKABLE void setCodec(const QString &codecName);
 private:
     QString _title;
     NoteModel *_noteModel;

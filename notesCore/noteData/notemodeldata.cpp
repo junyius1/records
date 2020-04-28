@@ -1,4 +1,5 @@
 #include "notemodeldata.h"
+#include <QXmlStreamReader>
 
 void LineStringModelData::data2QVariant(QVariant &variant)
 {
@@ -19,4 +20,111 @@ void LineStringModelData::qVariant2Data(const QVariant &variant)
     {
         _noteData.push_back(*it);
     }
+}
+
+void XmlStringModelData::data2QVariant(QVariant &variant)
+{
+    QXmlStreamReader reader;
+    QString str;
+    for(QList<QVariant>::iterator it =_noteData.begin(); it!= _noteData.end(); it++)
+    {
+        str += it->toString();
+        str.push_back('\n');
+    }
+    variant.setValue(str);
+}
+
+void XmlStringModelData::qVariant2Data(const QVariant &variant)
+{
+    QString str = variant.toString();
+    QXmlStreamReader reader(str);
+
+
+    //file.close();
+    //read a token in input stream
+    reader.readNext();
+    while(!reader.atEnd())
+    {
+        if(reader.isStartElement())
+        {
+            if(QLatin1String("Root") == reader.name())
+            {
+                //if item, read next token
+                reader.readNext();
+
+                //read file main part
+                while(!reader.atEnd())
+                {
+                    //if read close token </Root>
+                    if(reader.isEndElement())
+                    {
+                        reader.readNext();
+                        break;
+                    }
+                    //if read new <Item> start the token
+                    if(reader.isStartElement())
+                    {
+                        //if read new <Item> start the token
+                        if(QLatin1String("Item") == reader.name())
+                        {
+                            reader.readNext();
+                            QString s;
+                            while(!reader.atEnd())
+                            {
+                                //if read close token </Item>,break the loop
+                                if(QLatin1String("Item") == reader.name() && reader.isEndElement())
+                                {
+                                    reader.readNext();
+                                    break;
+                                }
+
+                                //if read new <Content> start the token
+                                if(reader.isStartElement())
+                                {
+                                    //if read new Content token
+                                    if(QLatin1String("Content") == reader.name())
+                                    {
+                                        qint64 start = reader.characterOffset();
+                                        qint64 end = start;
+                                        while(!reader.atEnd()){
+                                            reader.readNext();
+                                            if(QLatin1String("Content") == reader.name() && reader.isEndElement())
+                                            {
+                                                reader.readNext();
+                                                break;
+                                            } else{
+                                                end = reader.characterOffset();
+                                                if(reader.isCharacters())
+                                                {
+                                                    end =end-1;
+                                                }
+                                            }
+                                        }
+                                        QString content = str.mid(static_cast<int>(start), static_cast<int>(end -start));
+                                        _noteData.push_back(content);
+                                    }else if(QLatin1String("Link") ==  reader.name()){
+                                        QString link = reader.readElementText();
+                                    }
+                                    reader.readNext();
+                                }else {
+                                    reader.readNext();
+                                }
+                            }
+                        }
+                    }else {
+                        reader.readNext();
+                    }
+                }
+
+            }else{
+                reader.raiseError(QObject::tr("Not a Root file"));
+                break;
+            }
+
+        }else{
+            reader.readNext();
+        }
+
+    }
+
 }

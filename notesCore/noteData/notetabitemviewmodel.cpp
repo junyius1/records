@@ -47,17 +47,23 @@ void NoteTabItemViewModel::openNote(const QString &filePath, const QString &keyw
     QSharedPointer<NoteModelData> p = NoteDataPool::instance()->getNoteModelData(path);
     if(p.isNull())
     {
-        p.reset(new LineStringModelData(filePath, keyword));
+        p.reset(new XmlStringModelData(filePath, keyword));
         const QSharedPointer<SaveFile> saveFile = p->getSaveFile();
         saveFile->setSaveFileData(p);
         connect(saveFile.data(), &SaveFile::onReadFileOK, this, &NoteTabItemViewModel::onReadFileOK);
     }
     _noteModel->setNoteModelData(p);
-    p->getSaveFile()->read();
+    p->read();
 }
 
 void NoteTabItemViewModel::onReadFileOK()
 {
     _noteModel->reset();
     qDebug() << "onReadFileOK()";
+}
+
+void NoteTabItemViewModel::setCodec(const QString &codecName)
+{
+    _noteModel->getNoteModelData()->clear();
+    _noteModel->getNoteModelData()->read(codecName);
 }
