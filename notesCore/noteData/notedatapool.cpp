@@ -9,7 +9,7 @@ NoteDataPool::NoteDataPool()
 
 }
 
-QSharedPointer<NoteModelData> NoteDataPool::getNoteModelData(const QString &path)
+QSharedPointer<NoteModelData> &NoteDataPool::getNoteModelData(const QString &path)
 {
     NOTE_MODEL_DATA_MAP::iterator it = _noteModelDataMap.find(path);
     if(it == _noteModelDataMap.end())

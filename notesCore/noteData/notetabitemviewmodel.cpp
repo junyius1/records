@@ -45,16 +45,23 @@ void NoteTabItemViewModel::openNote(const QString &filePath, const QString &keyw
 {
     const QString path = filePath + keyword;
     _noteModel = new NoteModel;
-    QSharedPointer<NoteModelData> p = NoteDataPool::instance()->getNoteModelData(path);
+    QSharedPointer<NoteModelData> &p = NoteDataPool::instance()->getNoteModelData(path);
     if(p.isNull())
     {
         p.reset(new XmlStringModelData(filePath, keyword));
         const QSharedPointer<SaveFile> saveFile = p->getSaveFile();
         saveFile->setSaveFileData(p);
         connect(saveFile.data(), &SaveFile::onReadFileOK, this, &NoteTabItemViewModel::onReadFileOK);
+        _noteModel->setNoteModelData(p);
+        p->read();
+    } else{
+        _noteModel->setNoteModelData(p);
     }
-    _noteModel->setNoteModelData(p);
-    p->read();
+}
+
+void NoteTabItemViewModel::reset()
+{
+    _noteModel->reset();
 }
 
 void NoteTabItemViewModel::onReadFileOK()

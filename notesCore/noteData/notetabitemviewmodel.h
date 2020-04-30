@@ -37,6 +37,7 @@ public:
     Q_INVOKABLE void setCodec(const QString &codecName);
     Q_INVOKABLE const QString getCodec();
     Q_INVOKABLE void addData(const QString &data);
+    Q_INVOKABLE void reset();
 private:
     QString _title;
     NoteModel *_noteModel;

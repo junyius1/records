@@ -70,6 +70,9 @@ Page {
         id: swipe
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
+        onCurrentIndexChanged: {
+            currentItem.viewModel.reset();
+        }
     }
 
     Component {

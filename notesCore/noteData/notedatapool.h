@@ -13,7 +13,7 @@ private:
     NOTE_MODEL_DATA_MAP _noteModelDataMap;
 public:
     NoteDataPool();
-    QSharedPointer<NoteModelData> getNoteModelData(const QString &path);
+    QSharedPointer<NoteModelData> &getNoteModelData(const QString &path);
     bool delNoteModelData(const QString &path);
     static NoteDataPool * instance();
     ~NoteDataPool();
