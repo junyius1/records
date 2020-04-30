@@ -193,22 +193,36 @@ Page {
                     }
                 }
             }
+    Connections {
+      target: Qt.application
+      onStateChanged: {
+          if(Qt.application.state === Qt.ApplicationActive)
+          {
+              if(tabIndex === parentView.getCurrentIndex())
+              {
+                clipboard.showDialog(clipboard.text())
+//              console.log(Qt.ApplicationActive," ",Qt.application.state )
+              }
+          }
+//          console.log("text=====", clipboard.text())
+      }
+    }
 
-//    Clipboard {
-//        id:clipboard
-//        property string preText
+    Clipboard {
+        id:clipboard
+        property string preText
 
-//        function showDialog(text){
-//            if(text !== preText){
-//                preText = text;
-//                // 弹出输入框
-//                Message.getInput("New Note", "Content:", "QString", function(){
-//                    var item = swipe.itemAt(swipe.count - 1)
-//                    //界面触发添加text到MainTabItemViewModel到notesmodel
-//                    item.viewModel.addData(text)
-//                }, text)
-//            }
-//        }
-//    }
+        function showDialog(text){
+            if(text !== preText){
+                preText = text;
+                // show input box
+                Message.getInput("New Note", "Content:", "QString", function(result){
+                    if(result===undefined)return;
+                    //add text to note model
+                    viewModel.addData(result)
+                }, text)
+            }
+        }
+    }
 
 }

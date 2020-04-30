@@ -11,18 +11,6 @@ Page {
     property MainViewModel viewModel: null
     readonly property bool presentAsRoot: true
 
-    Connections {
-      target: Qt.application
-      onStateChanged: {
-          if(Qt.application.state === Qt.ApplicationActive)
-          {
-//              clipboard.showDialog(clipboard.text())
-//              console.log(Qt.ApplicationActive," ",Qt.application.state )
-          }
-//          console.log("text=====", clipboard.text())
-      }
-    }
-
     signal openTab(string fileName, string filePath, int tabIndex, bool fileIsDir);
 
     onOpenTab: {
@@ -94,6 +82,10 @@ Page {
         }
     }
 
+    function getCurrentIndex()
+    {
+        return swipe.currentIndex;
+    }
 
     property var tabKeeper :[]//because of c++ created component will be gc by qml, so add this component's reference
 

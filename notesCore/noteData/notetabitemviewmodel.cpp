@@ -5,11 +5,12 @@
 #include "noteData/notedatapool.h"
 //#include "noteData/notemodeldata.h"
 
-//
-//void NotesTabItemViewModel::addData(const QString &data)
-//{
-//    _noteModel->addData(data);
-//}
+
+void NoteTabItemViewModel::addData(const QString &data)
+{
+    _noteModel->getNoteModelData()->addData(data);
+    _noteModel->reset();
+}
 
 NoteTabItemViewModel::NoteTabItemViewModel(QObject *parent) :
     ViewModel(parent),

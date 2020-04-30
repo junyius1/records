@@ -18,6 +18,11 @@ public:
     {
         _noteData.clear();
     }
+    void addData(const QString &data)
+    {
+        _noteData.push_back(data);
+        _saveNoteData->save(_saveNoteData);
+    }
     NoteModelData(const QString &filePath, const QString &keyword)
     {
         _saveNoteData.reset(new SaveFile(filePath, keyword));

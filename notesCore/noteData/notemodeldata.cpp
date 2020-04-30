@@ -24,14 +24,19 @@ void LineStringModelData::qVariant2Data(const QVariant &variant)
 
 void XmlStringModelData::data2QVariant(QVariant &variant)
 {
-    QXmlStreamReader reader;
-    QString str;
+    QString s;
+    QXmlStreamWriter writer(&s);
+    writer.setCodec("UTF-8");
+    writer.writeStartDocument();
+    writer.writeStartElement(QLatin1String("MultiItems"));
     for(QList<QVariant>::iterator it =_noteData.begin(); it!= _noteData.end(); it++)
     {
-        str += it->toString();
-        str.push_back('\n');
+        writer.writeStartElement(QLatin1String("Item"));
+        writer.writeTextElement(QLatin1String("Content"), it->toString());
+        writer.writeEndElement();
     }
-    variant.setValue(str);
+    writer.writeEndDocument();
+    variant.setValue<QString>(s);
 }
 
 void XmlStringModelData::qVariant2Data(const QVariant &variant)
@@ -47,7 +52,7 @@ void XmlStringModelData::qVariant2Data(const QVariant &variant)
     {
         if(reader.isStartElement())
         {
-            if(QLatin1String("Root") == reader.name())
+            if(QLatin1String("MultiItems") == reader.name())
             {
                 //if item, read next token
                 reader.readNext();

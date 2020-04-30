@@ -1,5 +1,5 @@
-#ifndef NOTEVIEWMODEL_H
-#define NOTEVIEWMODEL_H
+#ifndef NOTETABITEMVIEWMODEL_H
+#define NOTETABITEMVIEWMODEL_H
 
 #include "viewmodel.h"
 #include "notemodel.h"
@@ -30,16 +30,16 @@ protected:
 
 public Q_SLOTS:
 
-//    void addData(const QString &data);
     void onReadFileOK();
 public:
     //note item list
     Q_INVOKABLE NoteModel *noteModel() const;
     Q_INVOKABLE void setCodec(const QString &codecName);
     Q_INVOKABLE const QString getCodec();
+    Q_INVOKABLE void addData(const QString &data);
 private:
     QString _title;
     NoteModel *_noteModel;
 };
 
-#endif // NOTEVIEWMODEL_H
+#endif // NOTETABITEMVIEWMODEL_H

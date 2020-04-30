@@ -68,7 +68,7 @@ bool SaveFile::timeoutCB()
 
 bool SaveFile::runSaveFile(const QVariant &data)
 {
-    QSaveFile qSaveFile(_keyword);
+    QSaveFile qSaveFile(getPath());
     if(!qSaveFile.open(QIODevice::WriteOnly))
     {
         return false;
