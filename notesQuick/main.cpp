@@ -8,6 +8,7 @@
 #include "quickpresenter.h"
 #include "clipboard.h"
 #include <QQmlContext>
+#include "dirfiledelegate.h"
 #include "common.h"
 
 QTMVVM_REGISTER_CORE_APP(notesApp)
@@ -34,7 +35,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.addImportPath((QStringLiteral("../qml")));
-//    engine.rootContext()->setContextProperty(QLatin1String(R"(notesModel)"), NotesModel::instance());
+    engine.rootContext()->setContextProperty(QLatin1String(R"(dirFileDelegate)"), DirFileDelegate::instance());
     engine.load(QUrl(QStringLiteral("qrc:/App.qml")));
 
 //    g_qmlEngine = &engine;

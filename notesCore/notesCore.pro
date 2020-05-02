@@ -14,6 +14,7 @@ INCLUDEPATH += $$PWD/../src/mvvmcore
 HEADERS += \
     common.h \
     configmodel.h \
+    dirfiledelegate.h \
     filesystemmodel.h \
     noteData/notedatapool.h \
     noteData/notemodel.h \
@@ -30,6 +31,7 @@ HEADERS += \
 
 SOURCES += \
     configmodel.cpp \
+    dirfiledelegate.cpp \
     filesystemmodel.cpp \
     noteData/notedatapool.cpp \
     noteData/notemodel.cpp \

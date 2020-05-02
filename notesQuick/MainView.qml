@@ -37,7 +37,7 @@ Page {
             anchors.fill: parent
             rowSpacing: 0
             columnSpacing: 0
-            columns: 2
+            columns: 3
 
             ActionButton {
                 text: "≣"
@@ -45,16 +45,23 @@ Page {
                 onClicked: QuickPresenter.toggleDrawer()
             }
 
+
             ToolBarLabel {
                 text: qsTr("Note");
                 Layout.fillWidth: true
                 Layout.preferredHeight: 56
             }
 
+            ActionButton {
+                text: "x"
+                display: AbstractButton.TextOnly
+                onClicked: popCurTab();
+            }
+
             //swipe view's head tab bar
             TabBar {
                 id: tabBar
-                Layout.columnSpan: 2
+                Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Repeater {
                 }
@@ -71,7 +78,8 @@ Page {
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
         onCurrentIndexChanged: {
-            currentItem.viewModel.reset();
+            if(currentItem && currentItem.viewModel.reset)
+                currentItem.viewModel.reset();
         }
     }
 
@@ -100,6 +108,14 @@ Page {
         tabKeeper.push(item);
         tabBar.setCurrentIndex(item.tabIndex)
         return true;
+    }
+
+    function popCurTab()
+    {
+        var i = getCurrentIndex();
+        if(!i)return;
+        tabBar.takeItem(i).destroy();
+        swipe.takeItem(i).destroy();
     }
 
     function popAfterIndex(tabIndex)

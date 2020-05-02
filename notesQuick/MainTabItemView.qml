@@ -11,6 +11,58 @@ Page {
     property MainView parentView: null
     property int tabIndex: -1
 
+    Component{
+        id:dirFileOprMenu
+        Menu {
+            property string cachePath: ""
+            property bool cacheIsDir: false
+            Component {
+                id: menuItem
+                MenuItem {
+
+                }
+            }
+
+            function createMenu(map)
+            {
+                if(map["copy"])
+                {
+                    var obj = menuItem.createObject(parent, { text: "copy"});
+                    obj.triggered.connect(function(){
+                            dirFileDelegate.startCopy(cachePath, cacheIsDir)
+                        });
+                    addItem(obj)
+                }
+                if(map["cut"])
+                {
+                    obj = menuItem.createObject(parent, { text: "cut"});
+                    obj.triggered.connect(function(){
+                            dirFileDelegate.startCut(cachePath, cacheIsDir)
+                        });
+                    addItem(obj)
+                }
+                if(map["paste"])
+                {
+                    obj = menuItem.createObject(parent, { text: "paste"});
+                    obj.triggered.connect(function(){
+                            dirFileDelegate.endPaste(cachePath)
+                        });
+                    addItem(obj)
+                }
+                if(map["delete"])
+                {
+                    obj = menuItem.createObject(parent, { text: "delete"});
+                    obj.triggered.connect(function(){
+                            dirFileDelegate.remove(cachePath, cacheIsDir)
+                        });
+                    addItem(obj)
+                }
+            }
+        }
+    }
+
+
+
     GridLayout {
         columns: 2
         anchors.fill: parent
@@ -73,9 +125,18 @@ Page {
                     }
                     MouseArea{
                         anchors.fill: wrapper
-                        hoverEnabled: true
-                        onClicked: {
+//                        hoverEnabled: true
+                        onPressed: {
                             fileListView.currentIndex = index
+                        }
+
+                        onPressAndHold: {
+                            var menu = dirFileOprMenu.createObject(parent, {cachePath:filePath, cacheIsDir:fileIsDir});
+                            menu.createMenu({"copy":true, "cut":true, "delete":true});
+                            menu.popup();
+                        }
+
+                        onClicked: {
                             emit: parentView.openTab(fileName, filePath, tabIndex, fileIsDir);
                         }
 //                        onDoubleClicked: {
@@ -88,8 +149,25 @@ Page {
                     }
                 }
             }
+            MouseArea{
+                anchors.fill: parent
+                propagateComposedEvents: true
+                onPressed:{
+                    if(fileListView.itemAt(mouse.x, mouse.y))
+                    {
+                        mouse.accepted =false;
+                    } else{
+                        if(dirFileDelegate.canPaste()){
+                            var menu = dirFileOprMenu.createObject(parent, {cachePath:viewModel.getCurDirectory()});
+                            menu.createMenu({"paste":true});
+                            menu.popup();
+                        }
+                    }
+                }
+            }
         }
     }
+
     footer:Rectangle {
                 width: parent.width
                 height: 20
