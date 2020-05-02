@@ -180,5 +180,19 @@ ApplicationWindow {
 
 	Component.onCompleted: QuickPresenter.qmlPresenter = _root
 
+    Connections {
+      target: dirFileDelegate
+      onDelFileOrDir: {
+          for(var i=0; i < _rootStack.depth; i++)
+          {
+              var item = _rootStack.get(i, StackView.ForceLoad)
+              if(item)
+              {
+                  item.closeTab(path);
+              }
+          }
+      }
+    }
+
 	onClosing: close.accepted = !closeAction();
 }

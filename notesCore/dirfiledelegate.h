@@ -7,6 +7,8 @@
 class DirFileDelegate :public QObject
 {
     Q_OBJECT
+Q_SIGNALS:
+    void delFileOrDir(const QString& path);
 private:
     QString _cachePath;
     enum OperatorType
@@ -22,6 +24,7 @@ private:
     void copyDir(const QString &startPath, const QString &endPath);
     void __copyDir(const QString &startPath, const QString &endPath);
     void removeDir(const QString &fromPath);
+    void __removeDir(const QString &fromPath);
 
 public:
     DirFileDelegate(QObject *parent=nullptr);

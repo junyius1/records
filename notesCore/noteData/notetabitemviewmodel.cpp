@@ -64,6 +64,11 @@ void NoteTabItemViewModel::reset()
     _noteModel->reset();
 }
 
+QString NoteTabItemViewModel::filePath()
+{
+    return _noteModel->getNoteModelData()->getSaveFile()->getPath();
+}
+
 void NoteTabItemViewModel::onReadFileOK()
 {
     _noteModel->reset();

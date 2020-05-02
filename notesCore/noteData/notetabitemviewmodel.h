@@ -12,6 +12,7 @@ class NoteTabItemViewModel : public QtMvvm::ViewModel
 
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(NoteModel* noteModel READ noteModel CONSTANT)
+    Q_PROPERTY(QString filePath READ filePath CONSTANT)
 
     QTMVVM_CONTAINER_VM(MainViewModel)
 
@@ -20,6 +21,7 @@ public:
     ~NoteTabItemViewModel() override;
 
     QString title() const;
+    QString filePath();
 
 Q_SIGNALS:
     void titleChanged(QString title);

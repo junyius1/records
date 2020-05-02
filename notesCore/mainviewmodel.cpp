@@ -51,3 +51,8 @@ QString MainTabItemViewModel::getCurDirectory() const
 {
     return _fileSystemModel->rootPath();
 }
+
+QString MainTabItemViewModel::filePath()
+{
+    return _fileSystemModel->rootPath();
+}

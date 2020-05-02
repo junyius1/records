@@ -98,32 +98,61 @@ Page {
         return swipe.currentIndex;
     }
 
-    property var tabKeeper :[]//because of c++ created component will be gc by qml, so add this component's reference
+    property var tabKeeper :new Object//because of c++ created component will be gc by qml, so add this component's reference
+    property string jsString: ""//only declare like this can be javascript string
 
     function presentTab(item) {
         tabBar.addItem(_newTab.createObject(tabBar, {title: item.viewModel.title}));
         item.parentView = tabView;
         item.tabIndex = tabBar.count-1;
         swipe.addItem(item);
-        tabKeeper.push(item);
+        tabKeeper[item.viewModel.filePath] = item;
         tabBar.setCurrentIndex(item.tabIndex)
         return true;
+    }
+
+    function closeTab(path)
+    {
+        for(var p in tabKeeper)
+        {
+            jsString = p;
+
+//            console.log("str11-----===",tabKeeper[p],"==", jsString, "===", path, "===",jsString.indexOf(path));
+
+            if(jsString.indexOf(path) != -1)
+            {
+                removeTab(tabKeeper[p].tabIndex);
+            }
+        }
+    }
+    function removeTab(index)
+    {
+        var item = swipe.takeItem(index);
+        if(item)
+        {
+            delete tabKeeper[item.viewModel.filePath]
+            item.destroy();
+        }
+
+        item = tabBar.takeItem(index);
+        if(item)
+        {
+            item.destroy();
+        }
     }
 
     function popCurTab()
     {
         var i = getCurrentIndex();
         if(!i)return;
-        tabBar.takeItem(i).destroy();
-        swipe.takeItem(i).destroy();
+        removeTab(i);
     }
 
     function popAfterIndex(tabIndex)
     {
         for(var i =swipe.count-1; i > tabIndex; i --)
         {
-            tabBar.takeItem(i).destroy();
-            swipe.takeItem(i).destroy();
+            removeTab(i)
         }
     }
 
@@ -132,5 +161,6 @@ Page {
             tabBar.takeItem(0).destroy();
         while(swipe.count > 0)
             swipe.takeItem(0).destroy();
+        tabKeeper = new Object;
     }
 }

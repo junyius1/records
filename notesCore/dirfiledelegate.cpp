@@ -26,14 +26,14 @@ void DirFileDelegate::startCut(QString fromPath, bool isDir)
     _operatorType = isDir?CUT_DIR:CUT;
 }
 
-void DirFileDelegate::removeDir(const QString &fromPath)
+void DirFileDelegate::__removeDir(const QString &fromPath)
 {
     QDir dir(fromPath);
     if (! dir.exists())
         return;
     foreach (QString d, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         QString dst_path = fromPath + QDir::separator() + d;
-        removeDir(dst_path);
+        __removeDir(dst_path);
     }
 
     foreach (QString f, dir.entryList(QDir::Files)) {
@@ -41,6 +41,12 @@ void DirFileDelegate::removeDir(const QString &fromPath)
     }
 
     dir.rmdir(fromPath);
+}
+
+void DirFileDelegate::removeDir(const QString &fromPath)
+{
+    __removeDir(fromPath);
+    emit delFileOrDir(fromPath);
 }
 
 void DirFileDelegate::remove(QString fromPath, bool isDir)

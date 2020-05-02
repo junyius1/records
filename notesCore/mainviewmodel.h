@@ -21,6 +21,7 @@ class MainTabItemViewModel : public QtMvvm::ViewModel
     Q_OBJECT
 
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
+    Q_PROPERTY(QString filePath READ filePath CONSTANT)
 
     QTMVVM_CONTAINER_VM(MainViewModel)
 //    QTMVVM_INJECT_PROP(FileSystemModel*, fileSystemModel, _fileSystemModel)
@@ -31,6 +32,7 @@ public:
     ~MainTabItemViewModel() override;
 
     QString title() const;
+    QString filePath();
 
 Q_SIGNALS:
     void titleChanged(QString title);
