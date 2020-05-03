@@ -11,7 +11,12 @@ DirFileDelegate::DirFileDelegate(QObject *parent):QObject(parent),_cachePath(QLa
 
 bool DirFileDelegate::canPaste()
 {
-    return _cachePath != QLatin1String("");
+    return _cachePath != QLatin1String("") && !isRename();
+}
+
+bool DirFileDelegate::isRename()
+{
+    return RENAME == _operatorType || RENAME_DIR == _operatorType;
 }
 
 void DirFileDelegate::startCopy(QString fromPath, bool isDir)
@@ -24,6 +29,12 @@ void DirFileDelegate::startCut(QString fromPath, bool isDir)
 {
     _cachePath = fromPath;
     _operatorType = isDir?CUT_DIR:CUT;
+}
+
+void DirFileDelegate::startRename(QString fromPath, bool isDir)
+{
+    _cachePath = fromPath;
+    _operatorType = isDir?RENAME_DIR:RENAME;
 }
 
 void DirFileDelegate::__removeDir(const QString &fromPath)
@@ -110,6 +121,15 @@ void DirFileDelegate::endPaste(QString endPath)
     {
         copyDir(_cachePath, endPath);
         removeDir(_cachePath);
+    }else if(_operatorType == RENAME)
+    {
+        QFile::rename(_cachePath, endPath);
+    } else if(_operatorType == RENAME_DIR)
+    {
+        QDir dir(_cachePath);
+        if (! dir.exists())
+            return;
+        dir.rename(_cachePath, endPath);
     }
     _cachePath = QLatin1String("");
 }

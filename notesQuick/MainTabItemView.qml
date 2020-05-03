@@ -16,6 +16,7 @@ Page {
         Menu {
             property string cachePath: ""
             property bool cacheIsDir: false
+            property var curListItem: null
             Component {
                 id: menuItem
                 MenuItem {
@@ -57,6 +58,27 @@ Page {
                         });
                     addItem(obj)
                 }
+                if(map["rename"])
+                {
+                    obj = menuItem.createObject(parent, { text: "rename"});
+                    obj.triggered.connect(function(){
+                            fileListView.editItem = curListItem;
+                            for(var i in curListItem.children)
+                            {
+                                var item = curListItem.children[i];
+                                if(item instanceof TextEdit)
+                                {
+                                    item.selectAll();
+                                    item.focus = true;
+                                } else if(item instanceof MouseArea)
+                                {
+                                    item.enabled = false;
+                                }
+                            }
+                            dirFileDelegate.startRename(cachePath, cacheIsDir);
+                        });
+                    addItem(obj)
+                }
             }
         }
     }
@@ -70,6 +92,7 @@ Page {
         anchors.rightMargin: 2
         ListView {
             id: fileListView
+            property var editItem: null
             x: 57
             y: 146
             Layout.fillWidth:true
@@ -111,28 +134,36 @@ Page {
                         height: 15
                         width: 15
                     }
-                    Text {
+                    TextEdit {
                         //anchors.bottomMargin: 2
-                        id: contactInfo
+                        id: editInfo
                         x: 17
                         y: 4
+//                        visible: false
+                        width: parent.width
+                        height: parent.height
                         text: {
                             if(!fileName) return "";
-                            return wrapper.ListView.isCurrentItem ? "<b>" + fileName +"</b>" : fileName
+                            return fileName
                         }
+
+                        selectByMouse: true
                         color: wrapper.ListView.isCurrentItem ? "black" : "blue"
-                        horizontalAlignment: Text.AlignHCenter
+                        horizontalAlignment: Text.AlignLeft
+                        onVisibleChanged: if(visible) editInfo.forceActiveFocus()
                     }
+
                     MouseArea{
                         anchors.fill: wrapper
 //                        hoverEnabled: true
                         onPressed: {
                             fileListView.currentIndex = index
+                            fileListView.renameFinished();
                         }
 
                         onPressAndHold: {
-                            var menu = dirFileOprMenu.createObject(parent, {cachePath:filePath, cacheIsDir:fileIsDir});
-                            menu.createMenu({"copy":true, "cut":true, "delete":true});
+                            var menu = dirFileOprMenu.createObject(parent, {cachePath:filePath, cacheIsDir:fileIsDir, curListItem:parent});
+                            menu.createMenu({"copy":true, "cut":true, "delete":true, "rename":true});
                             menu.popup();
                         }
 
@@ -149,6 +180,27 @@ Page {
                     }
                 }
             }
+            function renameFinished()
+            {
+                var editItem = this.editItem;
+                if(!editItem)return;
+                var path = "";
+                for(var i in editItem.children)
+                {
+                    var item = editItem.children[i];
+                    if(item instanceof TextEdit)
+                    {
+                        item.focus = false;
+                        path = item.text;
+                    } else if(item instanceof MouseArea)
+                    {
+                        item.enabled = true;
+                    }
+                }
+                this.editItem = null;
+                dirFileDelegate.endPaste(viewModel.getCurDirectory()+"/"+path)
+            }
+
             MouseArea{
                 anchors.fill: parent
                 propagateComposedEvents: true
@@ -161,6 +213,9 @@ Page {
                             var menu = dirFileOprMenu.createObject(parent, {cachePath:viewModel.getCurDirectory()});
                             menu.createMenu({"paste":true});
                             menu.popup();
+                        } else if(dirFileDelegate.isRename())
+                        {
+                            fileListView.renameFinished();
                         }
                     }
                 }

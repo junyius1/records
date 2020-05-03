@@ -17,6 +17,8 @@ private:
         COPY,
         CUT_DIR,
         COPY_DIR,
+        RENAME,
+        RENAME_DIR
     };
     OperatorType _operatorType;
 
@@ -30,9 +32,11 @@ public:
     DirFileDelegate(QObject *parent=nullptr);
     Q_INVOKABLE void startCopy(QString fromPath, bool isDir);
     Q_INVOKABLE void startCut(QString fromPath, bool isDir);
+    Q_INVOKABLE void startRename(QString fromPath, bool isDir);
     Q_INVOKABLE void endPaste(QString endPath);
     Q_INVOKABLE void remove(QString fromPath, bool isDir);
     Q_INVOKABLE bool canPaste();
+    Q_INVOKABLE bool isRename();
 
     static DirFileDelegate * instance();
 
