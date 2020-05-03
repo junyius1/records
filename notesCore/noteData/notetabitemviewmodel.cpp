@@ -3,7 +3,7 @@
 #include <QtCore/QDebug>
 #include "notemodel.h"
 #include "noteData/notedatapool.h"
-//#include "noteData/notemodeldata.h"
+#include <QDir>
 
 
 void NoteTabItemViewModel::addData(const QString &data)
@@ -36,19 +36,41 @@ QString NoteTabItemViewModel::title() const
 
 void NoteTabItemViewModel::onInit(const QVariantHash &params)
 {
-    _title = params.value(QStringLiteral("title"), _title).toString();
-    openNote(params.value(QStringLiteral("filePath")).toString(), QStringLiteral("")/*params.value(QStringLiteral("keyword")).toString()*/);
+    bool isNew = params.value(QStringLiteral("isNew"), false).toBool();
+    if(isNew)
+    {
+        QString filePath = params.value(QStringLiteral("filePath")).toString();
+
+        int i =0;
+        QString fileName;
+        while(true)
+        {
+            fileName = QString(QLatin1String("/NEWNOTE%1.kw")).arg(i);
+            QFile file( filePath + fileName );
+            if(file.exists()) i++;
+            else {
+                file.open( QIODevice::WriteOnly );
+                file.close();
+                _title = fileName.mid(1);
+                break;
+            }
+        }
+        openNote(filePath+fileName, fileName);
+    } else{
+        _title = params.value(QStringLiteral("title"), _title).toString();
+        openNote(params.value(QStringLiteral("filePath")).toString(), params.value(QStringLiteral("keyword")).toString());
+    }
     emit titleChanged(_title);
 }
 
 void NoteTabItemViewModel::openNote(const QString &filePath, const QString &keyword)
 {
-    const QString path = filePath + keyword;
+    const QString path = filePath;
     _noteModel = new NoteModel;
     QSharedPointer<NoteModelData> &p = NoteDataPool::instance()->getNoteModelData(path);
     if(p.isNull())
     {
-        p.reset(new XmlStringModelData(filePath, keyword));
+        p.reset(NoteDataPool::createNoteModelData(filePath, keyword));
         const QSharedPointer<SaveFile> saveFile = p->getSaveFile();
         saveFile->setSaveFileData(p);
         connect(saveFile.data(), &SaveFile::onReadFileOK, this, &NoteTabItemViewModel::onReadFileOK);

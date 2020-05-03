@@ -18,6 +18,8 @@ public:
     static NoteDataPool * instance();
     ~NoteDataPool();
 
+    static NoteModelData* createNoteModelData(const QString &filePath, const QString &keyword);
+
 private:
     static NoteDataPool *_instance;
 };

@@ -37,7 +37,7 @@ public Q_SLOTS:
 public:
     QString getPath()
     {
-        return _path + _keyword;
+        return _path;
     }
     void setSaveFileData(QSharedPointer<ISaveFileData> other)
     {

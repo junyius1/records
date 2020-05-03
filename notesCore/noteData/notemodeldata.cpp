@@ -22,7 +22,7 @@ void LineStringModelData::qVariant2Data(const QVariant &variant)
     }
 }
 
-void XmlStringModelData::data2QVariant(QVariant &variant)
+void KWStringModelData::data2QVariant(QVariant &variant)
 {
     QString s;
     QXmlStreamWriter writer(&s);
@@ -39,7 +39,7 @@ void XmlStringModelData::data2QVariant(QVariant &variant)
     variant.setValue<QString>(s);
 }
 
-void XmlStringModelData::qVariant2Data(const QVariant &variant)
+void KWStringModelData::qVariant2Data(const QVariant &variant)
 {
     QString str = variant.toString();
     QXmlStreamReader reader(str);

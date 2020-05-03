@@ -37,7 +37,7 @@ Page {
             anchors.fill: parent
             rowSpacing: 0
             columnSpacing: 0
-            columns: 3
+            columns: 4
 
             ActionButton {
                 text: "≣"
@@ -53,6 +53,13 @@ Page {
             }
 
             ActionButton {
+                id: addNewNote
+                text: "+"
+                display: AbstractButton.TextOnly
+                onClicked: addTab();
+            }
+
+            ActionButton {
                 text: "x"
                 display: AbstractButton.TextOnly
                 onClicked: popCurTab();
@@ -61,7 +68,7 @@ Page {
             //swipe view's head tab bar
             TabBar {
                 id: tabBar
-                Layout.columnSpan: 3
+                Layout.columnSpan: 4
                 Layout.fillWidth: true
                 Repeater {
                 }
@@ -78,8 +85,19 @@ Page {
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
         onCurrentIndexChanged: {
-            if(currentItem && currentItem.viewModel.reset)
-                currentItem.viewModel.reset();
+            if(currentItem ){
+                if(currentItem.viewModel.reset){
+                    currentItem.viewModel.reset();
+                }
+                if(currentItem instanceof MainTabItemView)
+                {
+                    addNewNote.text = "+";
+                    addNewNote.enabled = true;
+                } else{
+                    addNewNote.text = "";
+                    addNewNote.enabled = false;
+                }
+            }
         }
     }
 
@@ -139,6 +157,14 @@ Page {
         {
             item.destroy();
         }
+    }
+
+    function addTab()
+    {
+        viewModel.show("NoteTabItemViewModel*", {
+                           "filePath": swipe.currentItem.viewModel.getCurDirectory(),
+                           "isNew":true
+                       })
     }
 
     function popCurTab()

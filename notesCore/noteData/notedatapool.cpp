@@ -1,6 +1,7 @@
 #include "notedatapool.h"
 
 #include <QHash>
+#include "common.h"
 
 NoteDataPool *NoteDataPool::_instance = nullptr;
 
@@ -48,4 +49,16 @@ NoteDataPool::~NoteDataPool()
          it->clear();
      }
      _noteModelDataMap.clear();
+}
+
+NoteModelData* NoteDataPool::createNoteModelData(const QString &filePath, const QString &keyword)
+{
+    QString kw = notes::getFileNameNoDot(keyword);
+    QString suffix = keyword.right(keyword.length() - kw.length() - 1);
+    if(suffix == QLatin1String("kw"))
+    {
+        return new KWStringModelData(filePath, kw);
+    } else {
+        return new LineStringModelData(filePath, kw);
+    }
 }

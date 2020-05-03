@@ -7,5 +7,13 @@ namespace notes {
         qDebug() << str;
     }
 
-//    QQmlApplicationEngine *g_qmlEngine;
+    QString getFileNameNoDot(const QString &fileName)
+    {
+        int dot = fileName.lastIndexOf('.');
+        if(dot==-1)
+        {
+            return fileName;
+        }
+        return fileName.left(dot);
+    }
 }

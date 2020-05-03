@@ -65,8 +65,10 @@ void DirFileDelegate::remove(QString fromPath, bool isDir)
     if(isDir)
     {
         removeDir(fromPath);
-    } else
+    } else{
         QFile::remove(fromPath);
+        emit delFileOrDir(fromPath);
+    }
 }
 
 QString genCopyName(const QString &str, int i)

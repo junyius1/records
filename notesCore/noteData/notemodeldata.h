@@ -64,17 +64,17 @@ public:
 
 };
 
-class XmlStringModelData : public NoteModelData
+class KWStringModelData : public NoteModelData
 {
 public:
-    XmlStringModelData(const QString &filePath, const QString &keyword):NoteModelData(filePath, keyword)
+    KWStringModelData(const QString &filePath, const QString &keyword):NoteModelData(filePath, keyword)
     {
     }
 
     void data2QVariant(QVariant &variant) override;
     void qVariant2Data(const QVariant &variant) override;
 
-    ~XmlStringModelData() override {}
+    ~KWStringModelData() override {}
 
 };
 

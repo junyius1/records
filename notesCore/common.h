@@ -8,7 +8,7 @@
 namespace notes {
     void debug(const QString &str);
 
-//    extern QQmlApplicationEngine *g_qmlEngine;
+    QString getFileNameNoDot(const QString &fileName);
 }
 
 #endif // COMMON_H
