@@ -2,7 +2,7 @@
 #define TESTPRESENTER_H
 
 #include <QObject>
-#include <QtMvvmCore/IPresenter>
+#include "ipresenter.h"
 
 class TestPresenter : public QObject, public QtMvvm::IPresenter
 {

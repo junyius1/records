@@ -1,7 +1,7 @@
 #ifndef TESTVIEWMODEL_H
 #define TESTVIEWMODEL_H
 
-#include <QtMvvmCore/ViewModel>
+#include "viewmodel.h"
 
 class TestViewModel : public QtMvvm::ViewModel
 {

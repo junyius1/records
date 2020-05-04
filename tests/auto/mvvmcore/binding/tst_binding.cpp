@@ -1,5 +1,5 @@
 #include <QtTest>
-#include <QtMvvmCore/Binding>
+#include "binding.h"
 using namespace QtMvvm;
 
 class BindingTest : public QObject

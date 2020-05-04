@@ -1,7 +1,7 @@
 #include <QString>
 #include <QtTest>
 #include <QCoreApplication>
-#include <QtMvvmCore/ServiceRegistry>
+#include "serviceregistry.h"
 
 #include "testinterface.h"
 #include "testservice.h"

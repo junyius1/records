@@ -1,5 +1,5 @@
 #include "testapp.h"
-#include <QtMvvmCore/ServiceRegistry>
+#include "serviceregistry.h"
 
 TestApp::TestApp(QObject *parent) :
 	CoreApp(parent)

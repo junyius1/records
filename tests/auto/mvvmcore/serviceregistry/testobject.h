@@ -3,7 +3,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
-#include <QtMvvmCore/Injection>
+#include "injection.h"
 
 #define CREATE_TEST_OBJECT(index, ...) \
 	class TestObject  ## index : public QObject \

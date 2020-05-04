@@ -1,5 +1,5 @@
 #include <QtTest>
-#include <QtMvvmCore/ServiceRegistry>
+#include "serviceregistry.h"
 #include "testapp.h"
 #include "testviewmodel.h"
 using namespace QtMvvm;

@@ -1,7 +1,7 @@
 #ifndef TESTAPP_H
 #define TESTAPP_H
 
-#include <QtMvvmCore/CoreApp>
+#include "coreapp.h"
 #include "testpresenter.h"
 
 class TestApp : public QtMvvm::CoreApp
