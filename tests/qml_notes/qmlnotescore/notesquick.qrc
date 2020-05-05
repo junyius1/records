@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>App.qml</file>
+        <file>images/File.png</file>
+        <file>images/FolderClosed.png</file>
+        <file>images/FolderOpen.png</file>
+    </qresource>
+    <qresource prefix="/qtmvvm/views">
+        <file>MainView.qml</file>
+        <file>DrawerView.qml</file>
+        <file>MainTabItemView.qml</file>
+        <file>WordsDelegate.qml</file>
+        <file>NoteTabItemView.qml</file>
+    </qresource>
+</RCC>
