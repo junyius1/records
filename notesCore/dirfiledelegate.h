@@ -38,6 +38,10 @@ public:
     Q_INVOKABLE bool canPaste();
     Q_INVOKABLE bool isRename();
 
+    bool copy(const QString &startPath, const QString &endPath);
+    bool remove(const QString &fromPath);
+    bool rename(const QString &startPath, const QString &endPath);
+
     static DirFileDelegate * instance();
 
 private:

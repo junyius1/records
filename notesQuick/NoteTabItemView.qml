@@ -26,6 +26,14 @@ Page {
             model: viewModel.noteModel
 
             delegate: WordsDelegate {}
+            MouseArea{
+                anchors.fill: parent
+                propagateComposedEvents: true
+                onPressed:{
+                    mouse.accepted =false;
+                    parentView.resetTabButtonRename()
+                }
+            }
         }
     }
 

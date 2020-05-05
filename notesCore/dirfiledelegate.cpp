@@ -1,12 +1,43 @@
 #include "dirfiledelegate.h"
 #include <QFile>
 #include <QDir>
+#include "saveFileData/savefilepool.h"
 
 DirFileDelegate *DirFileDelegate::_instance = nullptr;
 
 DirFileDelegate::DirFileDelegate(QObject *parent):QObject(parent),_cachePath(QLatin1String(""))
 {
 
+}
+
+bool DirFileDelegate::rename(const QString &startPath, const QString &endPath)
+{
+    SaveFilePool::FILE_OPR_RESULT result = SaveFilePool::instance()->rename(startPath, endPath);
+    if(result == SaveFilePool::FILE_OPR_RESULT::NOT_FOUND)
+    {
+        return QFile::rename(startPath, endPath);
+    }
+    return result == SaveFilePool::FILE_OPR_RESULT::FOUND_AND_SUCCESS;
+}
+
+bool DirFileDelegate::copy(const QString &startPath, const QString &endPath)
+{
+    SaveFilePool::FILE_OPR_RESULT result = SaveFilePool::instance()->copy(startPath, endPath);
+    if(result == SaveFilePool::FILE_OPR_RESULT::NOT_FOUND)
+    {
+        return QFile::copy(startPath, endPath);
+    }
+    return result == SaveFilePool::FILE_OPR_RESULT::FOUND_AND_SUCCESS;
+}
+
+bool DirFileDelegate::remove(const QString &fromPath)
+{
+    SaveFilePool::FILE_OPR_RESULT result = SaveFilePool::instance()->remove(fromPath);
+    if(result == SaveFilePool::FILE_OPR_RESULT::NOT_FOUND)
+    {
+        return QFile::remove(fromPath);
+    }
+    return result == SaveFilePool::FILE_OPR_RESULT::FOUND_AND_SUCCESS;
 }
 
 bool DirFileDelegate::canPaste()
@@ -48,7 +79,7 @@ void DirFileDelegate::__removeDir(const QString &fromPath)
     }
 
     foreach (QString f, dir.entryList(QDir::Files)) {
-        QFile::remove(fromPath + QDir::separator() + f);
+        remove(fromPath + QDir::separator() + f);
     }
 
     dir.rmdir(fromPath);
@@ -66,7 +97,7 @@ void DirFileDelegate::remove(QString fromPath, bool isDir)
     {
         removeDir(fromPath);
     } else{
-        QFile::remove(fromPath);
+        remove(fromPath);
         emit delFileOrDir(fromPath);
     }
 }
@@ -93,26 +124,26 @@ void DirFileDelegate::endPaste(QString endPath)
     if(_operatorType==COPY)
     {
         QString fileName = getFileName(_cachePath);
-        if(!QFile::copy(_cachePath, endPath+fileName))
+        if(!copy(_cachePath, endPath+fileName))
         {
             int i =0;
             while(true)
             {
                 QString copyName(genCopyName(fileName, i));
-                if(QFile::copy(_cachePath, endPath+copyName)) break;
+                if(copy(_cachePath, endPath+copyName)) break;
                 else i++;
             }
         }
     } else if(_operatorType==CUT)
     {
         QString fileName = getFileName(_cachePath);
-        if(!QFile::rename(_cachePath, endPath+fileName))
+        if(!rename(_cachePath, endPath+fileName))
         {
             int i =0;
             while(true)
             {
                 QString copyName(genCopyName(fileName, i));
-                if(QFile::rename(_cachePath, endPath+copyName)) break;
+                if(rename(_cachePath, endPath+copyName)) break;
                 else i++;
             }
         }
@@ -121,16 +152,22 @@ void DirFileDelegate::endPaste(QString endPath)
         copyDir(_cachePath, endPath);
     } else if(_operatorType == CUT_DIR)
     {
-        copyDir(_cachePath, endPath);
-        removeDir(_cachePath);
+//        copyDir(_cachePath, endPath);
+//        removeDir(_cachePath);
+        QDir dir(_cachePath);
+        if (! dir.exists())
+            return;
+        SaveFilePool::instance()->renameDir(_cachePath, endPath);
+        dir.rename(_cachePath, endPath);
     }else if(_operatorType == RENAME)
     {
-        QFile::rename(_cachePath, endPath);
+        rename(_cachePath, endPath);
     } else if(_operatorType == RENAME_DIR)
     {
         QDir dir(_cachePath);
         if (! dir.exists())
             return;
+        SaveFilePool::instance()->renameDir(_cachePath, endPath);
         dir.rename(_cachePath, endPath);
     }
     _cachePath = QLatin1String("");
@@ -182,15 +219,16 @@ void DirFileDelegate::__copyDir(const QString &startPath, const QString &endPath
     QDir dir(startPath);
     if (! dir.exists())
         return;
+    QLatin1Char separator('/');
 
     foreach (QString d, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
-        QString dst_path = endPath + QDir::separator() + d;
+        QString dst_path = endPath + separator + d;
         dir.mkpath(dst_path);
-        __copyDir(startPath + QDir::separator() + d, dst_path);
+        __copyDir(startPath + separator + d, dst_path);
     }
 
     foreach (QString f, dir.entryList(QDir::Files)) {
-        QFile::copy(startPath + QDir::separator() + f, endPath + QDir::separator() + f);
+        copy(startPath + separator + f, endPath + separator + f);
     }
 }
 

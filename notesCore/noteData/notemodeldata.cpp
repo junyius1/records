@@ -1,5 +1,17 @@
 #include "notemodeldata.h"
 #include <QXmlStreamReader>
+#include "saveFileData/savefilepool.h"
+
+NoteModelData::NoteModelData(const QString &filePath, const QString &keyword)
+{
+    _saveNoteData.reset(new SaveFile(filePath, keyword));
+    SaveFilePool::instance()->addFileSave(filePath, _saveNoteData);
+}
+
+NoteModelData::~NoteModelData() {
+    _saveNoteData.clear();
+    SaveFilePool::instance()->delFileSave(_saveNoteData->getPath());
+}
 
 void LineStringModelData::data2QVariant(QVariant &variant)
 {

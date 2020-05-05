@@ -105,9 +105,68 @@ Page {
         id: _newTab
         TabButton {
             property string title: ""
+            property string fileName: ""
 
             text: title
             width: Math.max(100, tabBar.width / 5)
+
+            TextEdit {
+                //anchors.bottomMargin: 2
+                id: editInfo
+                visible: false;
+
+                anchors.fill: parent
+                text: title
+
+                selectByMouse: true
+                color: "black"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                onVisibleChanged: if(visible) editInfo.forceActiveFocus()
+                onEditingFinished: {
+                    parent.text = parent.title
+                    editInfo.visible = false;
+                    title = swipe.currentItem.viewModel.filePath;
+                    console.log("sssssssss========",title)
+                    dirFileDelegate.startRename(title, false);
+                    var index = title.lastIndexOf('/');
+                    var path = title.substring(0, index);
+                    console.log("index=====",index, "====",path);
+                    dirFileDelegate.endPaste(path + fileName);
+                    console.log("currentindex===", tabBar.currentIndex)
+                    setTitle();
+                }
+            }
+            onPressAndHold: {
+                editInfo.visible = true;
+                editInfo.selectAll();
+                editInfo.focus = true;
+                text = ""
+            }
+            function setTitle()
+            {
+                var index = fileName.lastIndexOf('.');
+                title = fileName.substring(0, index);
+            }
+
+            Component.onCompleted: {
+                setTitle();
+            }
+        }
+
+    }
+
+
+
+    function resetTabButtonRename()
+    {
+        for(var i in tabBar.currentItem.children)
+        {
+            var item = tabBar.currentItem.children[i];
+            if(item instanceof TextEdit)
+            {
+                item.focus = false;
+            }
         }
     }
 
@@ -120,7 +179,7 @@ Page {
     property string jsString: ""//only declare like this can be javascript string
 
     function presentTab(item) {
-        tabBar.addItem(_newTab.createObject(tabBar, {title: item.viewModel.title}));
+        tabBar.addItem(_newTab.createObject(tabBar, {fileName: item.viewModel.title}));//item.viewModel.title is fileName
         item.parentView = tabView;
         item.tabIndex = tabBar.count-1;
         swipe.addItem(item);

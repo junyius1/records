@@ -13,28 +13,44 @@ class SaveFile : public QObject
 {
     Q_OBJECT
 private:
+    enum TARGET
+    {
+        READ=0,
+        SAVE,
+    };
+    struct FutureWatcher
+    {
+        FutureWatcher(TARGET target):_target(target)
+        {
+        }
+        FutureWatcher(){}//QFuture<T> need this constructor
+        enum TARGET _target;
+        QVariant _result;
+
+    };
     QSharedPointer<QTimer> _timer;
     QSharedPointer<ISaveFileData> _fileData;
 //    QFuture<bool> _future;
-    QFutureWatcher<bool> _futureWatcher;
+    QFutureWatcher<FutureWatcher> _futureWatcher;
 //    QFuture<QString> _futureRead;
-    QFutureWatcher<QString> _futureReadWatcher;
+//    QFutureWatcher<QString> _futureReadWatcher;
     QString _keyword;
     QString _path;
     QString _readCodec;
 Q_SIGNALS:
     void onReadFileOK();
-//    void onSaveFileOK();
+
 public Q_SLOTS:
     const QString &getCodec()
     {
         return _readCodec;
     }
     bool timeoutCB();
-    void onReadFile();
-    void onSaveFile();
+    void onResult();
 
 public:
+    void onReadFile(const QVariant &v);
+    void onSaveFile(const QVariant &v);
     QString getPath()
     {
         return _path;
@@ -43,11 +59,18 @@ public:
     {
         _fileData = other;
     }
-    bool runSaveFile(const QVariant &data);
-    QString runReadFile(const QString &codecName);
-    void save(const QSharedPointer<SaveFile> sp);
-    void read(const QSharedPointer<SaveFile> sp, const QString codecName=QLatin1String("UTF-8"));
-    bool switchNewData();
+    bool canDelete()
+    {
+        return _timer.isNull() && _futureWatcher.isFinished();
+    }
+    FutureWatcher runSaveFile(const QVariant &data);
+    FutureWatcher runReadFile(const QString &codecName);
+    void save();
+    bool copy(const QString &endPath);
+    bool rename(const QString &endPath);
+    bool renamePath(const QString &endPath);
+    bool remove();
+    void read(const QString codecName=QLatin1String("UTF-8"));
     SaveFile(const QString &filePath, const QString &keyword);
     QSharedPointer<ISaveFileData> getFileData()
     {

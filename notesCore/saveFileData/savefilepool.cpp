@@ -8,62 +8,40 @@ SaveFilePool::SaveFilePool()
 
 }
 
-QSharedPointer<SaveFile> SaveFilePool::getSaveFile(const QString &path)
-{
-    QSharedPointer<SaveFile> p = findFileSave(path);
-    if(p.isNull())
-    {
-        return findFileRead(path);
-    }
-    return p;
-}
 
-bool SaveFilePool::addFileRead(const QString &path, const QSharedPointer<SaveFile> sp)
-{
-    QSharedPointer<SaveFile> p = findFileSave(path);
-    if(p.isNull())
-    {
-        _fileReadMap[path] = sp;
-    }
-    return true;
-}
-
+//when add viewModel than register saveFile
 bool SaveFilePool::addFileSave(const QString &path, const QSharedPointer<SaveFile> sp)
 {
-    QSharedPointer<SaveFile> p = findFileSave(path);
-    if(p.isNull())
+    SaveFileRef sf;
+    if(findSaveFile(path, sf))
     {
-        _fileSaveMap[path] = sp;
+        sf._count ++;
+    } else{
+        sf._saveFile = sp;
+        _saveFilePool[path] = sf;
     }
     return true;
 }
 
-QSharedPointer<SaveFile> SaveFilePool::findFileRead(const QString &path)
+
+bool SaveFilePool::findSaveFile(const QString &path, SaveFilePool::SaveFileRef& saveFileRef)
 {
-    SAVE_FILE_MAP::iterator it = _fileReadMap.find(path);
-    if(it != _fileReadMap.end())
+    SAVE_FILE_MAP::iterator it = _saveFilePool.find(path);
+    if(it != _saveFilePool.end())
     {
-        return it.value();
+        saveFileRef = it.value();
+        return true;
     }
-    return nullptr;
+    return false;
 }
 
-QSharedPointer<SaveFile> SaveFilePool::findFileSave(const QString &path)
+bool SaveFilePool::testDelFileSave(const QString &path)
 {
-    SAVE_FILE_MAP::iterator it = _fileSaveMap.find(path);
-    if(it != _fileSaveMap.end())
+    SAVE_FILE_MAP::iterator it = _saveFilePool.find(path);
+    if(it != _saveFilePool.end())
     {
-        return it.value();
-    }
-    return nullptr;
-}
-
-bool SaveFilePool::delFileRead(const QString &path)
-{
-    SAVE_FILE_MAP::iterator it = _fileReadMap.find(path);
-    if(it == _fileReadMap.end())
-    {
-        _fileReadMap.erase(it);
+        if(it->_count <=0 && it->_saveFile->canDelete())
+            _saveFilePool.erase(it);
         return true;
     }
     return false;
@@ -71,10 +49,12 @@ bool SaveFilePool::delFileRead(const QString &path)
 
 bool SaveFilePool::delFileSave(const QString &path)
 {
-    SAVE_FILE_MAP::iterator it = _fileSaveMap.find(path);
-    if(it == _fileSaveMap.end())
+    SAVE_FILE_MAP::iterator it = _saveFilePool.find(path);
+    if(it != _saveFilePool.end())
     {
-        _fileSaveMap.erase(it);
+        it->_count--;
+        if(it->_count <=0 && it->_saveFile->canDelete())
+            _saveFilePool.erase(it);
         return true;
     }
     return false;
@@ -93,14 +73,50 @@ SaveFilePool * SaveFilePool::instance()
 
 SaveFilePool::~SaveFilePool()
 {
-    for(SAVE_FILE_MAP::iterator it = _fileSaveMap.begin(); it != _fileSaveMap.end(); it++)
+
+}
+
+//kill all related file thread when rename dir
+bool SaveFilePool::renameDir(const QString &startPath, const QString &endPath)
+{
+    for(SAVE_FILE_MAP::iterator it = _saveFilePool.begin(); it != _saveFilePool.end(); it++ )
     {
-        it->clear();
+        QString path(it->_saveFile->getPath());
+        if(path.contains(startPath))
+            it->_saveFile->renamePath(endPath);
     }
-    _fileSaveMap.clear();
-    for(SAVE_FILE_MAP::iterator it = _fileReadMap.begin(); it != _fileReadMap.end(); it++)
+    return true;
+}
+
+SaveFilePool::FILE_OPR_RESULT SaveFilePool::rename(const QString &startPath, const QString &endPath)
+{
+    SaveFileRef sf;
+    if(findSaveFile(startPath, sf))
     {
-        it->clear();
+        return sf._saveFile->rename(endPath)?FOUND_AND_SUCCESS:FOUND_AND_FAILED;
+    } else{
+        return NOT_FOUND;
     }
-    _fileReadMap.clear();
+}
+
+SaveFilePool::FILE_OPR_RESULT SaveFilePool::copy(const QString &startPath, const QString &endPath)
+{
+    SaveFileRef sf;
+    if(findSaveFile(startPath, sf))
+    {
+        return sf._saveFile->copy(endPath)?FOUND_AND_SUCCESS:FOUND_AND_FAILED;
+    } else{
+        return NOT_FOUND;
+    }
+}
+
+SaveFilePool::FILE_OPR_RESULT SaveFilePool::remove(const QString &fromPath)
+{
+    SaveFileRef sf;
+    if(findSaveFile(fromPath, sf))
+    {
+        return sf._saveFile->remove()?FOUND_AND_SUCCESS:FOUND_AND_FAILED;
+    } else{
+        return NOT_FOUND;
+    }
 }

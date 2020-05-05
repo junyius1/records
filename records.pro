@@ -3,7 +3,8 @@ TEMPLATE = subdirs
 SUBDIRS += \
         notesCore \
         notesQuick \
-        src
+        src \
+        tests
 
 notesQuick.depends += notesCore src
 

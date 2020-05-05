@@ -6,51 +6,86 @@ SaveFile::SaveFile(const QString &filePath, const QString &keyword):_readCodec(Q
 {
     _path = filePath;
    _keyword = keyword;
-   connect(&_futureWatcher, &QFutureWatcher<bool>::finished, this, &SaveFile::onSaveFile);
-   connect(&_futureReadWatcher, &QFutureWatcher<QString>::finished, this, &SaveFile::onReadFile);
+   connect(&_futureWatcher, &QFutureWatcher<FutureWatcher>::finished, this, &SaveFile::onResult);
+//   connect(&_futureReadWatcher, &QFutureWatcher<QString>::finished, this, &SaveFile::onReadFile);
 }
 
-void SaveFile::save(const QSharedPointer<SaveFile> sp)
+void SaveFile::save()
 {
     if(_timer) return;
     _timer = QSharedPointer<QTimer> (
             new QTimer(),
             &QTimer::deleteLater
          );
-    SaveFilePool::instance()->addFileSave(getPath(), sp);
 
     connect(_timer.data(), &QTimer::timeout, this, &SaveFile::timeoutCB);
     _timer->start(50000);
 }
 
-void SaveFile::read(const QSharedPointer<SaveFile> sp, const QString codecName)
+void SaveFile::read(const QString codecName)
 {
     waitingThread();
-    SaveFilePool::instance()->addFileRead(getPath(), sp);
-    QFuture<QString> futureRead = QtConcurrent::run(this, &SaveFile::runReadFile, codecName);
-    _futureReadWatcher.setFuture(futureRead);
+    QFuture<FutureWatcher> futureRead = QtConcurrent::run(this, &SaveFile::runReadFile, codecName);
+    _futureWatcher.setFuture(futureRead);
 }
 
-void SaveFile::onReadFile()
+bool SaveFile::renamePath(const QString &endPath)
 {
-    _fileData->qVariant2Data(_futureReadWatcher.result());
+    waitingThread();
+    _path = endPath;
+    return true;
+}
+
+bool SaveFile::rename(const QString &endPath)
+{
+    waitingThread();
+    _path = endPath;
+    return QFile::rename(getPath(), endPath);
+}
+
+bool SaveFile::copy(const QString &endPath)
+{
+    waitingThread();
+    return QFile::copy(getPath(), endPath);
+}
+
+bool SaveFile::remove()
+{
+    waitingThread();
+    return QFile::remove(getPath());
+}
+
+void SaveFile::onResult()
+{
+    FutureWatcher v = _futureWatcher.result();
+    if(v._target == READ)
+    {
+        onReadFile(v._result);
+    } else if(v._target == SAVE)
+    {
+        onSaveFile(v._result);
+    }
+}
+
+void SaveFile::onReadFile(const QVariant &v)
+{
+    _fileData->qVariant2Data(v);
     emit onReadFileOK();
-    SaveFilePool::instance()->delFileRead(getPath());
 }
 
 void SaveFile::waitingThread(){
     if(!_futureWatcher.isFinished()){
         _futureWatcher.waitForFinished();//block if the save file thread not finished
     }
-    if(!_futureReadWatcher.isFinished()){
-        _futureReadWatcher.waitForFinished();//block if the read file thread not finished
-    }
+//    if(!_futureReadWatcher.isFinished()){
+//        _futureReadWatcher.waitForFinished();//block if the read file thread not finished
+//    }
 }
 
-void SaveFile::onSaveFile()
+void SaveFile::onSaveFile(const QVariant &v)
 {
 //    emit onWriteFileOK();
-    SaveFilePool::instance()->delFileSave(getPath());
+      SaveFilePool::instance()->testDelFileSave(getPath());
 }
 
 bool SaveFile::timeoutCB()
@@ -58,7 +93,7 @@ bool SaveFile::timeoutCB()
     waitingThread();
     QVariant variant;
     _fileData->data2QVariant(variant);
-    QFuture<bool> future = QtConcurrent::run(this, &SaveFile::runSaveFile, variant);
+    QFuture<FutureWatcher> future = QtConcurrent::run(this, &SaveFile::runSaveFile, variant);
     _futureWatcher.setFuture(future);
     _timer->stop();
     _timer.clear();
@@ -66,17 +101,17 @@ bool SaveFile::timeoutCB()
     return true;
 }
 
-bool SaveFile::runSaveFile(const QVariant &data)
+SaveFile::FutureWatcher SaveFile::runSaveFile(const QVariant &data)
 {
     QSaveFile qSaveFile(getPath());
     if(!qSaveFile.open(QIODevice::WriteOnly))
     {
-        return false;
+        return SaveFile::FutureWatcher(SAVE);
     }
     QString t = data.toString();
     qSaveFile.write(t.toStdString().c_str());
     qSaveFile.commit();
-    return true;
+    return SaveFile::FutureWatcher(SAVE);
 }
 
 //QString GetCorrectUnicode(const QByteArray &ba, const char *codecName)
@@ -86,19 +121,23 @@ bool SaveFile::runSaveFile(const QVariant &data)
 //    return codec->toUnicode( ba.constData(), ba.size(), &state);
 //}
 
-QString SaveFile::runReadFile(const QString &codecName)
+SaveFile::FutureWatcher SaveFile::runReadFile(const QString &codecName)
 {
     QString path(getPath());
     QFile file(path);
+    FutureWatcher futureWatcher(READ);
     if(file.open(QIODevice::ReadOnly)){
 
         QTextStream ts(&file);
         Q_ASSERT(codecName != QLatin1String(""));
         ts.setCodec(codecName.toLatin1());
 
-        return ts.readAll();
+        futureWatcher._result.setValue<QString>(ts.readAll());
+
+        return futureWatcher;
     }
-    return QString(QLatin1String("error open file %s!")).arg(path);
+    futureWatcher._result.setValue<QString>(QString(QLatin1String("error open file %s!")).arg(path));
+    return futureWatcher;
 }
 
 SaveFile::~SaveFile()

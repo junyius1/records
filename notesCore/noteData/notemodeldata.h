@@ -21,16 +21,13 @@ public:
     void addData(const QString &data)
     {
         _noteData.push_back(data);
-        _saveNoteData->save(_saveNoteData);
+        _saveNoteData->save();
     }
-    NoteModelData(const QString &filePath, const QString &keyword)
-    {
-        _saveNoteData.reset(new SaveFile(filePath, keyword));
-    }
+    NoteModelData(const QString &filePath, const QString &keyword);
 
     void read(const QString codecName=QLatin1String("UTF-8"))
     {
-        _saveNoteData->read(_saveNoteData, codecName);
+        _saveNoteData->read(codecName);
     }
 
     const QList<QVariant> &getCNoteData()
@@ -45,9 +42,7 @@ public:
     {
         return _saveNoteData;
     }
-    ~NoteModelData() override {
-        _saveNoteData.clear();
-    }
+    ~NoteModelData() override;
 };
 
 class LineStringModelData : public NoteModelData
