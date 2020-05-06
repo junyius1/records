@@ -114,7 +114,7 @@ public slots:
     void qmlEngineAvailable(QQmlEngine *engine) {
 
 
-        engine->addImportPath((QStringLiteral("../qml")));
+//        engine->addImportPath((QStringLiteral("../qml")));
         engine->rootContext()->setContextProperty(QLatin1String("dirFileDelegate"), DirFileDelegate::instance());
 //        engine->load(QUrl(QStringLiteral("qrc:/App.qml")));
 

@@ -5,7 +5,8 @@ import QtTest 1.1
 
 Item {
     id: _root
-
+    width: 360
+    height: 520
     PresentingStackView {
         id: _rootStack
         anchors.fill: parent
@@ -36,7 +37,7 @@ Item {
         sourceComponent: PresentingDrawer {
             id: _rootDrawer
 
-            interactive: !_root.rootOnlyDrawer || _rootStack.depth == 1
+            interactive: !_root.rootOnlyDrawer || _rootStack.depth === 1
         }
     }
 
@@ -45,7 +46,10 @@ Item {
         when: windowShown
 
 		function test_1_SingleInit() {
-
+            var item = findChild(_rootStack, "addNewNote");
+            verify(item!==null, "not found addNewNote")
+            mouseClick(item);
+            wait(10000)
 		}
 	}
     Component.onCompleted: {

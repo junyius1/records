@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.addImportPath((QStringLiteral("../qml")));
-    engine.rootContext()->setContextProperty(QLatin1String(R"(dirFileDelegate)"), DirFileDelegate::instance());
+    engine.rootContext()->setContextProperty(QLatin1String("dirFileDelegate"), DirFileDelegate::instance());
     engine.load(QUrl(QStringLiteral("qrc:/App.qml")));
 
 //    g_qmlEngine = &engine;

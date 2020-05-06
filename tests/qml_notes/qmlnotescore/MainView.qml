@@ -54,6 +54,7 @@ Page {
 
             ActionButton {
                 id: addNewNote
+                objectName:"addNewNote"
                 text: "+"
                 display: AbstractButton.TextOnly
                 onClicked: addTab();
