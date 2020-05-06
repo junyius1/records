@@ -93,11 +93,7 @@ public:
 public slots:
 
     void applicationAvailable() {
-        QTest::qWait(2500);
-    }
-
-    void qmlEngineAvailable(QQmlEngine *engine) {
-        QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//        QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         // If you want to support file dialogs on platforms other then android, use a QApplication instead (and add QT += widgets to the pro file)
 //        QGuiApplication app(argc, argv);
         char url[] = "com.cross.notes";
@@ -112,6 +108,11 @@ public slots:
         qmlRegisterUncreatableType<NoteTabItemViewModel>(url, 1, 1, "NoteTabItemViewModel", QStringLiteral("NoteTabItemViewModel cannot be created"));
 
         qmlRegisterType<Clipboard>(url,1,0,"Clipboard");
+
+    }
+
+    void qmlEngineAvailable(QQmlEngine *engine) {
+
 
         engine->addImportPath((QStringLiteral("../qml")));
         engine->rootContext()->setContextProperty(QLatin1String("dirFileDelegate"), DirFileDelegate::instance());
@@ -132,10 +133,7 @@ public slots:
 //            m_serverProcess.waitForFinished(2000);
 //        }
     }
-private:
-//    QProcess m_serverProcess;
-//    QString m_testServerPath;
-//    QString m_opcuaDiscoveryUrl;
+
 };
 
 QUICK_TEST_MAIN_WITH_SETUP(qmlnotescore, SetupClass)

@@ -1,61 +1,54 @@
 import QtQuick 2.12
 import de.framework.QtMvvm.Core 1.1
+import de.framework.QtMvvm.Quick 1.1
 import QtTest 1.1
 
 Item {
-	id: root
+    id: _root
+
+    PresentingStackView {
+        id: _rootStack
+        anchors.fill: parent
+    }
+
+    function presentItem(item) {
+        return _rootStack.presentItem(item);
+    }
+
+    function presentDrawerContent(item) {
+        if(!_drawerLoader.item)
+            _drawerLoader.active = true;
+        return _drawerLoader.item.presentDrawerContent(item);
+    }
+
+    //! @copybrief PresentingDrawer::toggle
+    function toggleDrawer() {
+        if(_drawerLoader.item)
+            _drawerLoader.item.toggle();
+        else
+            console.warn("No drawer like view active. Cannot toggle drawer");
+    }
+
+    Loader {
+        id: _drawerLoader
+        active: false
+        asynchronous: false
+        sourceComponent: PresentingDrawer {
+            id: _rootDrawer
+
+            interactive: !_root.rootOnlyDrawer || _rootStack.depth == 1
+        }
+    }
 
 	TestCase {
-		name: "Binding"
-
-		QtObject {
-			id: obj
-
-			property int prop1: 42
-			property int prop2: 0
-		}
-
-		MvvmBinding {
-			id: bind
-			viewModel: obj
-			view: obj
-			viewModelProperty: "prop1"
-			viewProperty: "prop2"
-			type: MvvmBinding.SingleInit
-		}
+        name: "Present"
+        when: windowShown
 
 		function test_1_SingleInit() {
-			verify(bind.isValid());
-			compare(obj.prop1, 42);
-			compare(obj.prop2, 42);
-			obj.prop1 = 24;
-			compare(obj.prop2, 42);
-			obj.prop2 = 44;
-			compare(obj.prop1, 24);
-		}
 
-		function test_2_OneWayToView() {
-			bind.type = MvvmBinding.OneWayToView
-			obj.prop1 = 33;
-			compare(obj.prop2, 33);
-			obj.prop2 = 44;
-			compare(obj.prop1, 33);
-		}
-
-		function test_3_OneWayToViewModel() {
-			bind.type = MvvmBinding.OneWayToViewModel
-			obj.prop2 = 45;
-			compare(obj.prop1, 45);
-			obj.prop1 = 22;
-			compare(obj.prop2, 45);
-		}
-
-		function test_4_TwoWay() {
-			bind.type = MvvmBinding.TwoWay
-			obj.prop1 = 78;
-			compare(obj.prop2, 78);
-			obj.prop2 = 87;
-			compare(obj.prop1, 87);
 		}
 	}
+    Component.onCompleted: {
+        QuickPresenter.qmlPresenter = _root
+    }
 }
