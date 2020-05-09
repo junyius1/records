@@ -47,9 +47,42 @@ Item {
 
 		function test_1_SingleInit() {
             var item = findChild(_rootStack, "addNewNote");
-            verify(item!==null, "not found addNewNote")
+            verify(item!==null, "not found addNewNote");
             mouseClick(item);
-            wait(10000)
+            var tabBar = findChild(_rootStack, "tabBar");
+            var tabButton = tabBar.itemAt(0);
+            verify(tabButton!==null, "not found first tabButton");
+            wait(1000)//wait new tab init and add to swipe ok
+            var swipe = findChild(_rootStack, "swipe");
+            verify(swipe!==null, "not found swipe");
+            var newTabButton = tabBar.itemAt(1);
+            verify(newTabButton!==null, "not found second tabButton");
+            mouseClick(tabButton);
+            wait(100)//wait for click ative tab take effect
+
+            var fileListView = findChild(swipe.currentItem, "fileListView");
+            verify(fileListView!==null, "not found fileListView");
+            var newFileItem;
+            for(var i =0; i < fileListView.count; i++)
+            {
+                var fileNameItem = findChild(fileListView.itemAtIndex(i), "fileName");
+                if(fileNameItem.text === newTabButton.fileName)
+                {
+                    newFileItem = fileListView.itemAtIndex(i);
+                    break;
+                }
+            }
+            verify(fileListView!==undefined, "not found newFileItem named "+newTabButton.fileName);
+
+            mousePress(newFileItem);
+
+            mouseRelease(newFileItem, newFileItem.width / 2, item.height / 2, Qt.LeftButton, Qt.NoModifier, 2000)
+
+            var oprFileMenu = findChild(fileListView, "oprFileMenu");
+            var deleteItem = findChild(oprFileMenu, "delete");
+            mouseClick(deleteItem);
+
+            wait(1000000)
 		}
 	}
     Component.onCompleted: {

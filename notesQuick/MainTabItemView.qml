@@ -53,6 +53,7 @@ Page {
                 if(map["delete"])
                 {
                     obj = menuItem.createObject(parent, { text: "delete"});
+                    obj.objectName = "delete";
                     obj.triggered.connect(function(){
                             dirFileDelegate.remove(cachePath, cacheIsDir)
                         });
@@ -92,6 +93,7 @@ Page {
         anchors.rightMargin: 2
         ListView {
             id: fileListView
+            objectName: "fileListView"
             property var editItem: null
             x: 57
             y: 146
@@ -137,6 +139,7 @@ Page {
                     TextEdit {
                         //anchors.bottomMargin: 2
                         id: editInfo
+                        objectName: "fileName"
                         x: 17
                         y: 4
 //                        visible: false
@@ -162,7 +165,9 @@ Page {
                         }
 
                         onPressAndHold: {
-                            var menu = dirFileOprMenu.createObject(parent, {cachePath:filePath, cacheIsDir:fileIsDir, curListItem:parent});
+                            var menu = dirFileOprMenu.createObject(fileListView, {cachePath:filePath, cacheIsDir:fileIsDir, curListItem:parent});
+                            menu.contentItem.objectName = "oprFileMenu";
+
                             menu.createMenu({"copy":true, "cut":true, "delete":true, "rename":true});
                             menu.popup();
                         }

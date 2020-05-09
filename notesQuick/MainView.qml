@@ -69,6 +69,7 @@ Page {
             //swipe view's head tab bar
             TabBar {
                 id: tabBar
+                objectName: "tabBar"
                 Layout.columnSpan: 4
                 Layout.fillWidth: true
                 Repeater {
@@ -83,6 +84,7 @@ Page {
 
     SwipeView {
         id: swipe
+        objectName: "swipe"
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
         onCurrentIndexChanged: {
@@ -147,7 +149,7 @@ Page {
             function setTitle()
             {
                 var index = fileName.lastIndexOf('.');
-                title = fileName.substring(0, index);
+                title = index===-1?fileName:fileName.substring(0, index);
             }
 
             Component.onCompleted: {
