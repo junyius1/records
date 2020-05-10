@@ -91,6 +91,21 @@ void DirFileDelegate::removeDir(const QString &fromPath)
     emit delFileOrDir(fromPath);
 }
 
+void DirFileDelegate::rename(const QString &startPath, const QString &endPath, bool isDir)
+{
+    if(isDir)
+    {
+        QDir dir(startPath);
+        if (! dir.exists())
+            return;
+        SaveFilePool::instance()->renameDir(startPath, endPath);
+        dir.rename(startPath, endPath);
+    } else{
+        rename(startPath, endPath);
+    }
+    emit delFileOrDir(startPath);
+}
+
 void DirFileDelegate::remove(QString fromPath, bool isDir)
 {
     if(isDir)
@@ -154,21 +169,13 @@ void DirFileDelegate::endPaste(QString endPath)
     {
 //        copyDir(_cachePath, endPath);
 //        removeDir(_cachePath);
-        QDir dir(_cachePath);
-        if (! dir.exists())
-            return;
-        SaveFilePool::instance()->renameDir(_cachePath, endPath);
-        dir.rename(_cachePath, endPath);
+        rename(_cachePath, endPath, true);
     }else if(_operatorType == RENAME)
     {
-        rename(_cachePath, endPath);
+        rename(_cachePath, endPath, false);
     } else if(_operatorType == RENAME_DIR)
     {
-        QDir dir(_cachePath);
-        if (! dir.exists())
-            return;
-        SaveFilePool::instance()->renameDir(_cachePath, endPath);
-        dir.rename(_cachePath, endPath);
+        rename(_cachePath, endPath, true);
     }
     _cachePath = QLatin1String("");
 }

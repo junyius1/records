@@ -27,6 +27,10 @@ private:
     void __copyDir(const QString &startPath, const QString &endPath);
     void removeDir(const QString &fromPath);
     void __removeDir(const QString &fromPath);
+    void rename(const QString &startPath, const QString &endPath, bool isDir);
+    bool copy(const QString &startPath, const QString &endPath);
+    bool remove(const QString &fromPath);
+    bool rename(const QString &startPath, const QString &endPath);
 
 public:
     DirFileDelegate(QObject *parent=nullptr);
@@ -37,10 +41,6 @@ public:
     Q_INVOKABLE void remove(QString fromPath, bool isDir);
     Q_INVOKABLE bool canPaste();
     Q_INVOKABLE bool isRename();
-
-    bool copy(const QString &startPath, const QString &endPath);
-    bool remove(const QString &fromPath);
-    bool rename(const QString &startPath, const QString &endPath);
 
     static DirFileDelegate * instance();
 

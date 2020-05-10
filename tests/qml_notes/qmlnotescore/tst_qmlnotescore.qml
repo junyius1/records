@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import QtQuick.Controls 2.12
 import de.framework.QtMvvm.Core 1.1
 import de.framework.QtMvvm.Quick 1.1
 import QtTest 1.1
@@ -30,6 +31,20 @@ Item {
             console.warn("No drawer like view active. Cannot toggle drawer");
     }
 
+    Connections {
+      target: dirFileDelegate
+      onDelFileOrDir: {
+          for(var i=0; i < _rootStack.depth; i++)
+          {
+              var item = _rootStack.get(i, StackView.ForceLoad)
+              if(item)
+              {
+                  item.closeTab(path);
+              }
+          }
+      }
+    }
+
     Loader {
         id: _drawerLoader
         active: false
@@ -47,21 +62,21 @@ Item {
 
 		function test_1_SingleInit() {
             var item = findChild(_rootStack, "addNewNote");
-            verify(item!==null, "not found addNewNote");
+            verify(item, "not found addNewNote");
             mouseClick(item);
             var tabBar = findChild(_rootStack, "tabBar");
             var tabButton = tabBar.itemAt(0);
-            verify(tabButton!==null, "not found first tabButton");
+            verify(tabButton, "not found first tabButton");
             wait(1000)//wait new tab init and add to swipe ok
             var swipe = findChild(_rootStack, "swipe");
-            verify(swipe!==null, "not found swipe");
+            verify(swipe, "not found swipe");
             var newTabButton = tabBar.itemAt(1);
-            verify(newTabButton!==null, "not found second tabButton");
+            verify(newTabButton, "not found second tabButton");
             mouseClick(tabButton);
             wait(100)//wait for click ative tab take effect
 
             var fileListView = findChild(swipe.currentItem, "fileListView");
-            verify(fileListView!==null, "not found fileListView");
+            verify(fileListView, "not found fileListView");
             var newFileItem;
             for(var i =0; i < fileListView.count; i++)
             {
@@ -72,13 +87,15 @@ Item {
                     break;
                 }
             }
-            verify(fileListView!==undefined, "not found newFileItem named "+newTabButton.fileName);
+            verify(fileListView, "not found newFileItem named "+newTabButton.fileName);
 
             mousePress(newFileItem);
 
-            mouseRelease(newFileItem, newFileItem.width / 2, item.height / 2, Qt.LeftButton, Qt.NoModifier, 2000)
+            mouseRelease(newFileItem, newFileItem.width / 2, newFileItem.height / 2, Qt.LeftButton, Qt.NoModifier, 2000)
+            wait(100)//wait for pop up menu
 
             var oprFileMenu = findChild(fileListView, "oprFileMenu");
+            verify(oprFileMenu, "no pop up menu");
             var deleteItem = findChild(oprFileMenu, "delete");
             mouseClick(deleteItem);
 
